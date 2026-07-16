@@ -86,10 +86,6 @@
     "prefer-stable": true,
     "repositories": [
         {
-            "type": "composer",
-            "url": "https://mirrors.tencent.com/composer/"
-        },
-        {
             "type": "vcs",
             "url": "git@github.com:anyuhanfei/dcat_admin.git"
         }
