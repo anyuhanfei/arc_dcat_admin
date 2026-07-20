@@ -103,6 +103,8 @@ return [
     'save_failed'           => '保存失败 !',
     'refresh_succeeded'     => '刷新成功 !',
     'login_successful'      => '登录成功 !',
+    'login_captcha_error'   => '验证码错误',
+    'login_captcha'         => '验证码',
     'choose'                => '选择',
     'choose_file'           => '选择文件',
     'choose_image'          => '选择图片',

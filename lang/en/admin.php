@@ -107,6 +107,8 @@ return [
     'save_failed'           => 'Save failed !',
     'refresh_succeeded'     => 'Refresh succeeded !',
     'login_successful'      => 'Login successful',
+    'login_captcha_error'   => 'Captcha error',
+    'login_captcha'         => 'Captcha',
     'choose'                => 'Choose',
     'choose_file'           => 'Select file',
     'choose_image'          => 'Select image',

@@ -1,0 +1,141 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ARC Dcat Admin API",
+        "description": "后台管理系统的 API 接口文档",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "本地环境（自动适配当前域名）"
+        },
+        {
+            "url": "https://test.example.com/api",
+            "description": "测试环境"
+        },
+        {
+            "url": "https://example.com/api",
+            "description": "正式环境"
+        }
+    ],
+    "paths": {
+        "/api/sys/agreements/list": {
+            "post": {
+                "tags": [
+                    "协议管理"
+                ],
+                "summary": "协议列表",
+                "operationId": "b896d079310a5d546cb4fb5ffc234957",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "用户协议"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sys/agreements/detail": {
+            "post": {
+                "tags": [
+                    "协议管理"
+                ],
+                "summary": "协议详情",
+                "operationId": "74489ab40038cab4669dd36d1b6be1e9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "协议ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "用户协议"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "协议内容..."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "协议管理",
+            "description": "协议管理"
+        }
+    ]
+}
