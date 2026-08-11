@@ -31,6 +31,26 @@ Route::post('email/send', [\App\Api\Controllers\Ms\EmailController::class, 'send
 // 需登录接口
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/info', [\App\Api\Controllers\User\UserController::class, 'info']);
+    Route::post('user/update', [\App\Api\Controllers\User\UserController::class, 'update']);
+    Route::post('user/logout', [\App\Api\Controllers\User\UserController::class, 'logout']);
+    Route::post('user/cancel', [\App\Api\Controllers\User\UserController::class, 'cancel']);
+    Route::post('user/password/phone/update', [\App\Api\Controllers\User\PasswordPhoneController::class, 'update']);
+    Route::post('user/password/phone/verify', [\App\Api\Controllers\User\PasswordPhoneController::class, 'verify']);
+    Route::post('user/password/phone/change', [\App\Api\Controllers\User\PasswordPhoneController::class, 'change']);
+    Route::post('user/password/email/update', [\App\Api\Controllers\User\PasswordEmailController::class, 'update']);
+    Route::post('user/password/email/verify', [\App\Api\Controllers\User\PasswordEmailController::class, 'verify']);
+    Route::post('user/password/email/change', [\App\Api\Controllers\User\PasswordEmailController::class, 'change']);
+    Route::post('user/password/old/update', [\App\Api\Controllers\User\PasswordOldController::class, 'update']);
+    Route::post('user/password/old/verify', [\App\Api\Controllers\User\PasswordOldController::class, 'verify']);
+    Route::post('user/password/old/change', [\App\Api\Controllers\User\PasswordOldController::class, 'change']);
+    Route::post('user/phone/update', [\App\Api\Controllers\User\PhoneController::class, 'update']);
+    Route::post('user/phone/verify-old', [\App\Api\Controllers\User\PhoneController::class, 'verifyOld']);
+    Route::post('user/phone/change', [\App\Api\Controllers\User\PhoneController::class, 'change']);
+    Route::post('user/phone/update-new', [\App\Api\Controllers\User\PhoneController::class, 'updateNew']);
+    Route::post('user/email/update', [\App\Api\Controllers\User\EmailController::class, 'update']);
+    Route::post('user/email/verify-old', [\App\Api\Controllers\User\EmailController::class, 'verifyOld']);
+    Route::post('user/email/change', [\App\Api\Controllers\User\EmailController::class, 'change']);
+    Route::post('user/email/update-new', [\App\Api\Controllers\User\EmailController::class, 'updateNew']);
 });
 
 // 微信绑定手机号（需登录，统一在 login 前缀下）

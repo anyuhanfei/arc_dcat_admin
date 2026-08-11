@@ -42,21 +42,10 @@ class YidunService
     }
 
     /**
-     * 用户公开信息
+     * 用户公开信息（统一委托 User::userInfo()）
      */
     protected function userInfo(User $user): array
     {
-        return [
-            'id'         => $user->id,
-            'account'    => $user->account,
-            'phone'      => $user->phone,
-            'email'      => $user->email,
-            'nickname'   => $user->nickname,
-            'avatar'     => full_url($user->avatar),
-            'signature'  => $user->signature,
-            'gender'     => $user->gender,
-            'birthday'   => $user->birthday?->toDateString(),
-            'created_at' => $user->created_at?->toDateTimeString(),
-        ];
+        return $user->userInfo();
     }
 }

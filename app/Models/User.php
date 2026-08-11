@@ -49,6 +49,40 @@ class User extends Authenticatable
     }
 
     /**
+     * 用户公开信息（统一整理方法：登录接口与 user/info 接口共用）
+     *
+     * @return array{id:int, account:string, phone:?string, email:?string, nickname:string, avatar:string, signature:?string, gender:string, age:?int, birthday:?string, created_at:?string}
+     */
+    public function userInfo(): array
+    {
+        return [
+            'id'         => $this->id,
+            'account'    => $this->account,
+            'phone'      => $this->phone,
+            'email'      => $this->email,
+            'nickname'   => $this->nickname,
+            'avatar'     => full_url($this->avatar),
+            'signature'  => $this->signature,
+            'gender'     => match ((int) $this->gender) {
+                1 => '男',
+                2 => '女',
+                default => '未知',
+            },
+            'age'        => $this->age(),
+            'birthday'   => $this->birthday?->toDateString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+        ];
+    }
+
+    /**
+     * 根据生日计算年龄（未设置生日返回 null）
+     */
+    public function age(): ?int
+    {
+        return $this->birthday?->diffInYears(now());
+    }
+
+    /**
      * 生成随机用户 ID（6 位起）
      * 策略：从缓存水位位数开始（默认 6 位），一次生成 50 个随机数批量查重；
      * 50 个全部占用则位数 +1 继续（不封顶）；成功后将位数写入水位缓存（永久，无 TTL）
