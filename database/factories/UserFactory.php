@@ -25,6 +25,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => \App\Models\User::generateId(),
             'account' => fake()->unique()->userName(),
             'phone' => fake()->unique()->numerify('1##########'),
             'email' => fake()->unique()->safeEmail(),
