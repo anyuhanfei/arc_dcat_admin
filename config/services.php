@@ -62,4 +62,22 @@ return [
         ],
     ],
 
+    'wx' => [
+        // 微信小程序
+        'mini' => [
+            'appid'  => env('WX_MINI_APPID'),
+            'secret' => env('WX_MINI_SECRET'),
+        ],
+        // 微信公众号（H5 网页授权）
+        'mp' => [
+            'appid'  => env('WX_MP_APPID'),
+            'secret' => env('WX_MP_SECRET'),
+        ],
+        // 微信 APP（开放平台移动应用）
+        'app' => [
+            'appid'  => env('WX_APP_APPID'),
+            'secret' => env('WX_APP_SECRET'),
+        ],
+    ],
+
 ];

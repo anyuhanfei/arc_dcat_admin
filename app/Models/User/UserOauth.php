@@ -11,7 +11,9 @@ class UserOauth extends Model
 
     protected $table = 'user_oauths';
 
-    protected $fillable = ['user_id', 'type', 'openid', 'unionid', 'nickname', 'avatar', 'raw'];
+    protected $fillable = ['user_id', 'type', 'openid', 'unionid', 'nickname', 'avatar', 'raw', 'session_key'];
+
+    protected $hidden = ['session_key'];
 
     protected $casts = [
         'raw' => 'array',
