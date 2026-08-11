@@ -19,8 +19,8 @@ class PhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/phone/update',
-            summary: '修改手机号（一步，旧+新验证码）',
-            tags: ['用户'],
+            summary: '修改手机号（一步验证版）',
+            tags: ['用户/修改手机号信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -59,8 +59,8 @@ class PhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/phone/verify-old',
-            summary: '修改手机号（两步第一步：验证旧手机号签发 verify_token）',
-            tags: ['用户'],
+            summary: '验证旧手机号（两步验证版）',
+            tags: ['用户/修改手机号信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -101,8 +101,8 @@ class PhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/phone/change',
-            summary: '修改手机号（两步第二步：verify_token + 新号验证码）',
-            tags: ['用户'],
+            summary: '提交新手机号（两步验证版）',
+            tags: ['用户/修改手机号信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -140,8 +140,8 @@ class PhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/phone/update-new',
-            summary: '修改手机号（只验证新号一步换绑）',
-            tags: ['用户'],
+            summary: '修改手机号（不验证旧手机号版）',
+            tags: ['用户/修改手机号信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

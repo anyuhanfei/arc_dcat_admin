@@ -17,8 +17,8 @@ class UserController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/info',
-            summary: '用户信息',
-            tags: ['用户'],
+            summary: '获取用户信息',
+            tags: ['用户/用户信息'],
             responses: [
                 new OA\Response(
                     response: 200,
@@ -55,7 +55,7 @@ class UserController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/update',
             summary: '修改用户资料',
-            tags: ['用户'],
+            tags: ['用户/用户信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -101,7 +101,7 @@ class UserController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/logout',
             summary: '退出登录',
-            tags: ['用户'],
+            tags: ['用户/用户信息'],
             responses: [
                 new OA\Response(
                     response: 200,
@@ -128,7 +128,7 @@ class UserController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/cancel',
             summary: '注销账号',
-            tags: ['用户'],
+            tags: ['用户/用户信息'],
             responses: [
                 new OA\Response(
                     response: 200,

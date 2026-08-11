@@ -17,7 +17,7 @@ class SmsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sms/send',
             summary: '发送短信验证码',
-            tags: ['短信'],
+            tags: ['公共接口'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

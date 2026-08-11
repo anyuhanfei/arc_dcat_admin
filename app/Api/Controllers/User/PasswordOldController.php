@@ -18,8 +18,8 @@ class PasswordOldController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/old/update',
-            summary: '旧密码改密（一步）',
-            tags: ['用户'],
+            summary: '旧密码改密（一步验证版）',
+            tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -57,8 +57,8 @@ class PasswordOldController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/old/verify',
-            summary: '旧密码改密（两步第一步：校验旧密码并签发 verify_token）',
-            tags: ['用户'],
+            summary: '验证旧密码（两步验证版）',
+            tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -98,8 +98,8 @@ class PasswordOldController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/old/change',
-            summary: '旧密码改密（两步第二步：verify_token 改密）',
-            tags: ['用户'],
+            summary: '改密（两步验证版）',
+            tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

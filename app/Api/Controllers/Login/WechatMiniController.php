@@ -18,7 +18,7 @@ class WechatMiniController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/wechat-mini/login',
             summary: '微信小程序登录',
-            tags: ['登录'],
+            tags: ['登录/微信登录/微信小程序登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -64,7 +64,7 @@ class WechatMiniController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/wechat-mini/bind-phone',
             summary: '微信小程序绑定手机号',
-            tags: ['登录'],
+            tags: ['登录/微信登录/微信小程序登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

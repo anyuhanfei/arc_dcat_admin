@@ -17,7 +17,7 @@ class PhoneController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/phone/login',
             summary: '手机号验证码登录',
-            tags: ['登录'],
+            tags: ['登录/手机号登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

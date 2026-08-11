@@ -14,22 +14,6 @@ class PasswordService
     ) {}
 
     /**
-     * 注册
-     */
-    public function register(string $account, string $password): array
-    {
-        $nickname = '用户' . mb_substr($account, -4);
-
-        $user = $this->repository->createUser([
-            'account'  => $account,
-            'password' => $password,
-            'nickname' => $nickname,
-        ]);
-
-        return $this->userInfo($user);
-    }
-
-    /**
      * 登录
      */
     public function login(string $account, string $password): array

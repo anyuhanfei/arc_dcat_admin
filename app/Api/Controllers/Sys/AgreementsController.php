@@ -37,7 +37,7 @@ class AgreementsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/agreements/list',
             summary: '协议列表',
-            tags: ['协议管理'],
+            tags: ['公共接口/协议管理'],
             responses: [
                 new OA\Response(
                     response: 200,
@@ -70,7 +70,7 @@ class AgreementsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/agreements/detail',
             summary: '协议详情',
-            tags: ['协议管理'],
+            tags: ['公共接口/协议管理'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

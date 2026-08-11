@@ -18,7 +18,7 @@ class AppleController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/apple/login',
             summary: 'Apple 登录',
-            tags: ['登录'],
+            tags: ['登录/Apple 登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -64,7 +64,7 @@ class AppleController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/apple/bind-phone',
             summary: 'Apple 绑定手机号',
-            tags: ['登录'],
+            tags: ['登录/Apple 登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

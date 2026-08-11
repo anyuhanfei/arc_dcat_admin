@@ -19,8 +19,8 @@ class EmailController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/email/update',
-            summary: '修改邮箱（一步，旧+新验证码）',
-            tags: ['用户'],
+            summary: '修改邮箱（一步验证版）',
+            tags: ['用户/修改邮箱信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -59,8 +59,8 @@ class EmailController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/email/verify-old',
-            summary: '修改邮箱（两步第一步：验证旧邮箱签发 verify_token）',
-            tags: ['用户'],
+            summary: '验证旧邮箱（两步验证版）',
+            tags: ['用户/修改邮箱信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -101,8 +101,8 @@ class EmailController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/email/change',
-            summary: '修改邮箱（两步第二步：verify_token + 新邮箱验证码）',
-            tags: ['用户'],
+            summary: '提交新邮箱（两步验证版）',
+            tags: ['用户/修改邮箱信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -140,8 +140,8 @@ class EmailController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/email/update-new',
-            summary: '修改邮箱（只验证新邮箱一步换绑）',
-            tags: ['用户'],
+            summary: '修改邮箱（不验证旧邮箱版）',
+            tags: ['用户/修改邮箱信息'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

@@ -17,7 +17,7 @@ class EmailController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/email/send',
             summary: '发送邮箱验证码',
-            tags: ['邮件'],
+            tags: ['公共接口'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

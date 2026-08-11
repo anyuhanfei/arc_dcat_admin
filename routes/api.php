@@ -9,7 +9,6 @@ Route::post('sys/agreements/detail', [\App\Api\Controllers\Sys\AgreementsControl
 
 // 登录相关（公开接口）
 Route::prefix('login')->group(function () {
-    Route::post('password/register', [\App\Api\Controllers\Login\PasswordController::class, 'register']);
     Route::post('password/login', [\App\Api\Controllers\Login\PasswordController::class, 'login']);
     Route::post('password/register-by-phone', [\App\Api\Controllers\Login\PasswordController::class, 'registerByPhone']);
     Route::post('password/register-by-email', [\App\Api\Controllers\Login\PasswordController::class, 'registerByEmail']);
@@ -20,6 +19,8 @@ Route::prefix('login')->group(function () {
     Route::post('wechat-app/login', [\App\Api\Controllers\Login\WechatAppController::class, 'login']);
     Route::post('apple/login', [\App\Api\Controllers\Login\AppleController::class, 'login']);
     Route::post('yidun/login', [\App\Api\Controllers\Login\YidunController::class, 'login']);
+    Route::post('forgot-password/phone', [\App\Api\Controllers\Login\PasswordController::class, 'phone']);
+    Route::post('forgot-password/email', [\App\Api\Controllers\Login\PasswordController::class, 'email']);
 });
 
 // 短信相关（公开接口，短信不只登录使用）

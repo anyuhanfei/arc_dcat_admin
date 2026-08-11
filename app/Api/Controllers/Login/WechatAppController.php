@@ -18,7 +18,7 @@ class WechatAppController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/wechat-app/login',
             summary: '微信APP登录',
-            tags: ['登录'],
+            tags: ['登录/微信登录/微信APP登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -64,7 +64,7 @@ class WechatAppController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/login/wechat-app/bind-phone',
             summary: '微信APP绑定手机号',
-            tags: ['登录'],
+            tags: ['登录/微信登录/微信APP登录'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(

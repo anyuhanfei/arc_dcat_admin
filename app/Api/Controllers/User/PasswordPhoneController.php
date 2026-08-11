@@ -18,8 +18,8 @@ class PasswordPhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/phone/update',
-            summary: '手机号验证码改密（一步）',
-            tags: ['用户'],
+            summary: '手机号验证码改密（一步验证版）',
+            tags: ['用户/手机号改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -58,8 +58,8 @@ class PasswordPhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/phone/verify',
-            summary: '手机号验证码改密（两步第一步：验证并签发 verify_token）',
-            tags: ['用户'],
+            summary: '验证手机号（两步验证版）',
+            tags: ['用户/手机号改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -100,8 +100,8 @@ class PasswordPhoneController extends \Illuminate\Routing\Controller
     #[
         OA\Post(
             path: '/api/user/password/phone/change',
-            summary: '手机号验证码改密（两步第二步：verify_token 改密）',
-            tags: ['用户'],
+            summary: '改密（两步验证版）',
+            tags: ['用户/手机号改密'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
