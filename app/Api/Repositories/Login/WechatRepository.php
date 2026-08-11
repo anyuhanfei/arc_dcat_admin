@@ -40,6 +40,19 @@ class WechatRepository
     }
 
     /**
+     * 创建三方登录用户（通用；account/nickname 由调用方组装，id 由 User::generateId() 生成，password 不设 = null）
+     * refresh() 重新加载数据库默认值（如 status=1），避免新模型 status 为 null 被误判禁用
+     */
+    public function createOauthUser(string $account, string $nickname): User
+    {
+        return User::create([
+            'id'       => User::generateId(),
+            'account'  => $account,
+            'nickname' => $nickname,
+        ])->refresh();
+    }
+
+    /**
      * 按手机号查询用户
      */
     public function findUserByPhone(string $phone): ?User

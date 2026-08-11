@@ -18,6 +18,8 @@ Route::prefix('login')->group(function () {
     Route::post('wechat-mini/login', [\App\Api\Controllers\Login\WechatMiniController::class, 'login']);
     Route::post('wechat-mp/login', [\App\Api\Controllers\Login\WechatMpController::class, 'login']);
     Route::post('wechat-app/login', [\App\Api\Controllers\Login\WechatAppController::class, 'login']);
+    Route::post('apple/login', [\App\Api\Controllers\Login\AppleController::class, 'login']);
+    Route::post('yidun/login', [\App\Api\Controllers\Login\YidunController::class, 'login']);
 });
 
 // 短信相关（公开接口，短信不只登录使用）
@@ -36,4 +38,5 @@ Route::prefix('login')->middleware('auth:sanctum')->group(function () {
     Route::post('wechat-mini/bind-phone', [\App\Api\Controllers\Login\WechatMiniController::class, 'bindPhone']);
     Route::post('wechat-mp/bind-phone', [\App\Api\Controllers\Login\WechatMpController::class, 'bindPhone']);
     Route::post('wechat-app/bind-phone', [\App\Api\Controllers\Login\WechatAppController::class, 'bindPhone']);
+    Route::post('apple/bind-phone', [\App\Api\Controllers\Login\AppleController::class, 'bindPhone']);
 });

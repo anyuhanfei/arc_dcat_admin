@@ -80,4 +80,16 @@ return [
         ],
     ],
 
+    'apple' => [
+        // Apple 开发者账号的 Bundle ID / Service ID（Sign in with Apple）
+        'client_id' => env('APPLE_CLIENT_ID'),
+    ],
+
+    'yidun' => [
+        // 网易易盾一键登录（本机号码校验）
+        'secret_id'   => env('YIDUN_SECRET_ID'),
+        'business_id' => env('YIDUN_BUSINESS_ID'),
+        'secret_key'  => env('YIDUN_SECRET_KEY'),
+    ],
+
 ];
