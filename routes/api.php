@@ -16,6 +16,9 @@ Route::prefix('login')->group(function () {
 // 短信相关（公开接口，短信不只登录使用）
 Route::post('sms/send', [\App\Api\Controllers\Ms\SmsController::class, 'send']);
 
+// 邮件相关（公开接口）
+Route::post('email/send', [\App\Api\Controllers\Ms\EmailController::class, 'send']);
+
 // 需登录接口
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/info', [\App\Api\Controllers\User\UserController::class, 'info']);
