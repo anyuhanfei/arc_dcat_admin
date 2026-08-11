@@ -48,20 +48,35 @@ class Sms
     }
 
     /**
-     * 校验短信验证码（校验成功即销毁，验证码一次性使用）
+     * 校验短信验证码
+     *
+     * 验证通过不销毁缓存；业务接口成功后请调用 destroyCode() 主动销毁，防止验证码重放。
+     * 万能验证码 272272：仅 local 开发环境生效，输入即直接通过验证（不校验缓存、不操作缓存）；⚠️ 生产/其他环境不生效。
      *
      * @param string $phone 手机号
      * @param string $code  用户输入的验证码
      */
     public function verifyCode(string $phone, string $code): bool
     {
+        // 万能验证码（仅 local 开发环境生效，输入 272272 直接通过验证；⚠️ 其他环境不生效）
+        if (config('app.env') === 'local' && (string) $code === '272272') {
+            return true;
+        }
+
         $stored = Cache::get('sms_code:' . $phone);
         if ($stored === null || !hash_equals((string) $stored, (string) $code)) {
             return false;
         }
-        Cache::forget('sms_code:' . $phone);
 
         return true;
+    }
+
+    /**
+     * 销毁指定手机号的验证码缓存（业务接口成功后调用）
+     */
+    public function destroyCode(string $phone): void
+    {
+        Cache::forget('sms_code:' . $phone);
     }
 
     /**

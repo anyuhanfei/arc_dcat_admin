@@ -52,20 +52,35 @@ class Email
     }
 
     /**
-     * 校验邮箱验证码（校验成功即销毁，验证码一次性使用）
+     * 校验邮箱验证码
+     *
+     * 验证通过不销毁缓存；业务接口成功后请调用 destroyCode() 主动销毁，防止验证码重放。
+     * 万能验证码 272272：仅 local 开发环境生效，输入即直接通过验证（不校验缓存、不操作缓存）；⚠️ 生产/其他环境不生效。
      *
      * @param string $email 邮箱
      * @param string $code  用户输入的验证码
      */
     public function verifyCode(string $email, string $code): bool
     {
+        // 万能验证码（仅 local 开发环境生效，输入 272272 直接通过验证；⚠️ 其他环境不生效）
+        if (config('app.env') === 'local' && (string) $code === '272272') {
+            return true;
+        }
+
         $stored = Cache::get('email_code:' . $email);
         if ($stored === null || !hash_equals((string) $stored, (string) $code)) {
             return false;
         }
-        Cache::forget('email_code:' . $email);
 
         return true;
+    }
+
+    /**
+     * 销毁指定邮箱的验证码缓存（业务接口成功后调用）
+     */
+    public function destroyCode(string $email): void
+    {
+        Cache::forget('email_code:' . $email);
     }
 
     /**

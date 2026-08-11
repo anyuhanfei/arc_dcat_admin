@@ -24,4 +24,28 @@ class PasswordRepository
     {
         return User::create($data);
     }
+
+    /**
+     * 按手机号查询用户
+     */
+    public function findByPhone(string $phone): ?User
+    {
+        return User::where('phone', $phone)->first();
+    }
+
+    /**
+     * 按邮箱查询用户
+     */
+    public function findByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
+    }
+
+    /**
+     * 按账号查询用户
+     */
+    public function findByAccount(string $account): ?User
+    {
+        return User::where('account', $account)->first();
+    }
 }

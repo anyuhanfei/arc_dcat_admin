@@ -11,6 +11,10 @@ Route::post('sys/agreements/detail', [\App\Api\Controllers\Sys\AgreementsControl
 Route::prefix('login')->group(function () {
     Route::post('password/register', [\App\Api\Controllers\Login\PasswordController::class, 'register']);
     Route::post('password/login', [\App\Api\Controllers\Login\PasswordController::class, 'login']);
+    Route::post('password/register-by-phone', [\App\Api\Controllers\Login\PasswordController::class, 'registerByPhone']);
+    Route::post('password/register-by-email', [\App\Api\Controllers\Login\PasswordController::class, 'registerByEmail']);
+    Route::post('phone/login', [\App\Api\Controllers\Login\PhoneController::class, 'login']);
+    Route::post('email/login', [\App\Api\Controllers\Login\EmailController::class, 'login']);
 });
 
 // 短信相关（公开接口，短信不只登录使用）
