@@ -19,4 +19,5 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('sys/agreements', \App\Admin\Controllers\Sys\SysAgreementsController::class);
+    $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
 });
