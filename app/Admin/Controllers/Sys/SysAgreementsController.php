@@ -25,6 +25,8 @@ class SysAgreementsController extends AdminController
                 $filter->equal('id');
                 $filter->like('title');
             });
+            $grid->disableBatchActions();
+            $grid->disableRowSelector();
         });
     }
 
@@ -40,9 +42,9 @@ class SysAgreementsController extends AdminController
         return Show::make($id, new SysAgreements(), function (Show $show) {
             $show->field('id');
             $show->field('title');
-            $show->field('content');
-            $show->field('created_at');
+            $show->field('content')->unescape();
             $show->field('updated_at');
+            $show->disableDeleteButton();
         });
     }
 
@@ -57,9 +59,7 @@ class SysAgreementsController extends AdminController
             $form->display('id');
             $form->text('title');
             $form->ueditor('content', '内容');
-        
-            $form->display('created_at');
-            $form->display('updated_at');
+            $form->disableDeleteButton();
         });
     }
 }
