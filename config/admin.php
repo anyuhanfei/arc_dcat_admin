@@ -374,5 +374,12 @@ return [
         // When you use command `php artisan admin:ext-make` to generate extensions,
         // the extension files will be generated in this directory.
         'dir' => base_path('dcat-admin-extensions'),
+
+        // 媒体管理器（jatdung/media-manager）
+        'media-manager' => [
+            'disks' => ['public'],
+            'allowed_ext' => 'jpg,jpeg,png,gif,webp,svg',
+            'show_hidden_files' => false,
+        ],
     ],
 ];

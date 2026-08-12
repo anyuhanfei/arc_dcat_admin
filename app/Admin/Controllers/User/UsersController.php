@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers\User;
 
 use App\Admin\Repositories\User\Users;
+use App\Admin\Form\Field\MediaSelector;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
@@ -90,7 +91,7 @@ class UsersController extends AdminController
             $form->text('email');
             $form->text('password');
             $form->text('nickname');
-            $form->text('avatar');
+            $form->mediaSelector('avatar', '头像');
             $form->text('signature');
             $form->text('gender');
             $form->text('birthday');

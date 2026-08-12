@@ -20,13 +20,10 @@ class SysAgreementsController extends AdminController
         return Grid::make(new SysAgreements(), function (Grid $grid) {
             $grid->column('id')->sortable();
             $grid->column('title');
-            $grid->column('content');
-            $grid->column('created_at');
             $grid->column('updated_at')->sortable();
-        
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');
-        
+                $filter->like('title');
             });
         });
     }
@@ -59,7 +56,7 @@ class SysAgreementsController extends AdminController
         return Form::make(new SysAgreements(), function (Form $form) {
             $form->display('id');
             $form->text('title');
-            $form->text('content');
+            $form->ueditor('content', '内容');
         
             $form->display('created_at');
             $form->display('updated_at');

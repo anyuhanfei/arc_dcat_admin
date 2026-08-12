@@ -6,6 +6,9 @@ use Dcat\Admin\Admin;
 
 Admin::routes();
 
+// 自定义表单字段注册：媒体库选择器（App\Admin\Form\Field\MediaSelector）
+\Dcat\Admin\Form::extend('mediaSelector', \App\Admin\Form\Field\MediaSelector::class);
+
 // 登录验证码刷新（无需登录，只带路由前缀不带中间件）
 Route::prefix(config('admin.route.prefix'))
     ->withoutMiddleware(config('admin.route.middleware'))
@@ -18,6 +21,8 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index');
+    $router->get('media-selector/list', [\App\Admin\Controllers\MediaSelectorController::class, 'list']);
+    $router->post('media-selector/upload', [\App\Admin\Controllers\MediaSelectorController::class, 'upload']);
     $router->resource('sys/agreements', \App\Admin\Controllers\Sys\SysAgreementsController::class);
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
 });
