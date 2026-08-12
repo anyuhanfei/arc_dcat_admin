@@ -11,6 +11,7 @@ namespace Dcat\Admin {
     use Illuminate\Support\Collection;
 
     /**
+     * @property Grid\Column|Collection sortable
      * @property Grid\Column|Collection created_at
      * @property Grid\Column|Collection detail
      * @property Grid\Column|Collection id
@@ -66,10 +67,15 @@ namespace Dcat\Admin {
      * @property Grid\Column|Collection user_agent
      * @property Grid\Column|Collection content
      * @property Grid\Column|Collection deleted_at
+     * @property Grid\Column|Collection image
      * @property Grid\Column|Collection is_show
      * @property Grid\Column|Collection sort
-     * @property Grid\Column|Collection answer
+     * @property Grid\Column|Collection author
      * @property Grid\Column|Collection category_id
+     * @property Grid\Column|Collection keywords
+     * @property Grid\Column|Collection status
+     * @property Grid\Column|Collection summary
+     * @property Grid\Column|Collection answer
      * @property Grid\Column|Collection question
      * @property Grid\Column|Collection nickname
      * @property Grid\Column|Collection openid
@@ -83,8 +89,8 @@ namespace Dcat\Admin {
      * @property Grid\Column|Collection phone
      * @property Grid\Column|Collection phone_verified_at
      * @property Grid\Column|Collection signature
-     * @property Grid\Column|Collection status
      *
+     * @method Grid\Column|Collection sortable(string $label = null)
      * @method Grid\Column|Collection created_at(string $label = null)
      * @method Grid\Column|Collection detail(string $label = null)
      * @method Grid\Column|Collection id(string $label = null)
@@ -140,10 +146,15 @@ namespace Dcat\Admin {
      * @method Grid\Column|Collection user_agent(string $label = null)
      * @method Grid\Column|Collection content(string $label = null)
      * @method Grid\Column|Collection deleted_at(string $label = null)
+     * @method Grid\Column|Collection image(string $label = null)
      * @method Grid\Column|Collection is_show(string $label = null)
      * @method Grid\Column|Collection sort(string $label = null)
-     * @method Grid\Column|Collection answer(string $label = null)
+     * @method Grid\Column|Collection author(string $label = null)
      * @method Grid\Column|Collection category_id(string $label = null)
+     * @method Grid\Column|Collection keywords(string $label = null)
+     * @method Grid\Column|Collection status(string $label = null)
+     * @method Grid\Column|Collection summary(string $label = null)
+     * @method Grid\Column|Collection answer(string $label = null)
      * @method Grid\Column|Collection question(string $label = null)
      * @method Grid\Column|Collection nickname(string $label = null)
      * @method Grid\Column|Collection openid(string $label = null)
@@ -157,13 +168,13 @@ namespace Dcat\Admin {
      * @method Grid\Column|Collection phone(string $label = null)
      * @method Grid\Column|Collection phone_verified_at(string $label = null)
      * @method Grid\Column|Collection signature(string $label = null)
-     * @method Grid\Column|Collection status(string $label = null)
      */
     class Grid {}
 
     class MiniGrid extends Grid {}
 
     /**
+     * @property Show\Field|Collection sortable
      * @property Show\Field|Collection created_at
      * @property Show\Field|Collection detail
      * @property Show\Field|Collection id
@@ -219,10 +230,15 @@ namespace Dcat\Admin {
      * @property Show\Field|Collection user_agent
      * @property Show\Field|Collection content
      * @property Show\Field|Collection deleted_at
+     * @property Show\Field|Collection image
      * @property Show\Field|Collection is_show
      * @property Show\Field|Collection sort
-     * @property Show\Field|Collection answer
+     * @property Show\Field|Collection author
      * @property Show\Field|Collection category_id
+     * @property Show\Field|Collection keywords
+     * @property Show\Field|Collection status
+     * @property Show\Field|Collection summary
+     * @property Show\Field|Collection answer
      * @property Show\Field|Collection question
      * @property Show\Field|Collection nickname
      * @property Show\Field|Collection openid
@@ -236,8 +252,8 @@ namespace Dcat\Admin {
      * @property Show\Field|Collection phone
      * @property Show\Field|Collection phone_verified_at
      * @property Show\Field|Collection signature
-     * @property Show\Field|Collection status
      *
+     * @method Show\Field|Collection sortable(string $label = null)
      * @method Show\Field|Collection created_at(string $label = null)
      * @method Show\Field|Collection detail(string $label = null)
      * @method Show\Field|Collection id(string $label = null)
@@ -293,10 +309,15 @@ namespace Dcat\Admin {
      * @method Show\Field|Collection user_agent(string $label = null)
      * @method Show\Field|Collection content(string $label = null)
      * @method Show\Field|Collection deleted_at(string $label = null)
+     * @method Show\Field|Collection image(string $label = null)
      * @method Show\Field|Collection is_show(string $label = null)
      * @method Show\Field|Collection sort(string $label = null)
-     * @method Show\Field|Collection answer(string $label = null)
+     * @method Show\Field|Collection author(string $label = null)
      * @method Show\Field|Collection category_id(string $label = null)
+     * @method Show\Field|Collection keywords(string $label = null)
+     * @method Show\Field|Collection status(string $label = null)
+     * @method Show\Field|Collection summary(string $label = null)
+     * @method Show\Field|Collection answer(string $label = null)
      * @method Show\Field|Collection question(string $label = null)
      * @method Show\Field|Collection nickname(string $label = null)
      * @method Show\Field|Collection openid(string $label = null)
@@ -310,7 +331,6 @@ namespace Dcat\Admin {
      * @method Show\Field|Collection phone(string $label = null)
      * @method Show\Field|Collection phone_verified_at(string $label = null)
      * @method Show\Field|Collection signature(string $label = null)
-     * @method Show\Field|Collection status(string $label = null)
      */
     class Show {}
 

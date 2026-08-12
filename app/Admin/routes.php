@@ -27,6 +27,8 @@ Route::group([
     $router->resource('sys/agreements', \App\Admin\Controllers\Sys\SysAgreementsController::class);
     $router->resource('sys/faq-categories', \App\Admin\Controllers\Sys\SysFaqCategoriesController::class);
     $router->resource('sys/faq-questions', \App\Admin\Controllers\Sys\SysFaqQuestionsController::class);
+    $router->resource('sys/article-categories', \App\Admin\Controllers\Sys\SysArticleCategoriesController::class);
+    $router->resource('sys/articles', \App\Admin\Controllers\Sys\SysArticlesController::class);
 
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
 

@@ -111,8 +111,7 @@ CSS;
         }
     }
 
-    Dcat.ready(function () {
-        $(document).off('click.dcat-media-selector').on('click.dcat-media-selector', '.media-selector-open', function () {
+    $(document).off('click.dcat-media-selector').on('click.dcat-media-selector', '.media-selector-open', function () {
             var $group = $(this).closest('.input-group');
             var $input = $group.find('input');
             var $preview = $group.find('.media-selector-preview');
@@ -212,7 +211,6 @@ CSS;
                 }
             });
         });
-    });
 })();
 JS;
 
