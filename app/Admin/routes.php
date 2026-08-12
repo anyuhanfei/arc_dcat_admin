@@ -23,6 +23,11 @@ Route::group([
     $router->get('/', 'HomeController@index');
     $router->get('media-selector/list', [\App\Admin\Controllers\MediaSelectorController::class, 'list']);
     $router->post('media-selector/upload', [\App\Admin\Controllers\MediaSelectorController::class, 'upload']);
+
     $router->resource('sys/agreements', \App\Admin\Controllers\Sys\SysAgreementsController::class);
+    $router->resource('sys/faq-categories', \App\Admin\Controllers\Sys\SysFaqCategoriesController::class);
+    $router->resource('sys/faq-questions', \App\Admin\Controllers\Sys\SysFaqQuestionsController::class);
+
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
+
 });

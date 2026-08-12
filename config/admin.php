@@ -71,7 +71,7 @@ return [
 
         'namespace' => 'App\\Admin\\Controllers',
 
-        'middleware' => ['web', 'admin'],
+        'middleware' => ['web', \App\Admin\Middleware\AdminLocale::class, 'admin'],
 
         'enable_session_middleware' => false,
     ],
@@ -301,15 +301,15 @@ return [
 
         // Role table and model.
         'roles_table' => 'admin_roles',
-        'roles_model' => Dcat\Admin\Models\Role::class,
+        'roles_model' => App\Admin\Models\Role::class,
 
         // Permission table and model.
         'permissions_table' => 'admin_permissions',
-        'permissions_model' => Dcat\Admin\Models\Permission::class,
+        'permissions_model' => App\Admin\Models\Permission::class,
 
         // Menu table and model.
         'menu_table' => 'admin_menu',
-        'menu_model' => Dcat\Admin\Models\Menu::class,
+        'menu_model' => App\Admin\Models\Menu::class,
 
         // Pivot table for table above.
         'role_users_table'       => 'admin_role_users',

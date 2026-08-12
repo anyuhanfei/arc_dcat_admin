@@ -19,31 +19,31 @@ class UsersController extends AdminController
     protected function grid()
     {
         return Grid::make(new Users(), function (Grid $grid) {
-            $grid->column('id')->sortable();
-            $grid->column('account', '登录账号');
-            $grid->column('phone', '手机号');
-            $grid->column('email', '邮箱');
-            $grid->column('nickname', '昵称');
-            $grid->column('avatar', '头像')->display(function ($v) {
+            $grid->column('id', admin_trans_field('id'))->sortable();
+            $grid->column('account', admin_trans_field('account'));
+            $grid->column('phone', admin_trans_field('phone'));
+            $grid->column('email', admin_trans_field('email'));
+            $grid->column('nickname', admin_trans_field('nickname'));
+            $grid->column('avatar', admin_trans_field('avatar'))->display(function ($v) {
                 return $v ? '<img src="'.e(full_url($v)).'" style="height:40px;border-radius:4px;">' : '';
             });
-            $grid->column('gender', '性别')->using([0 => '未知', 1 => '男', 2 => '女'])->label([0 => 'default', 1 => 'primary', 2 => 'pink']);
-            $grid->column('birthday', '生日');
-            $grid->column('status', '状态')->using([0 => '禁用', 1 => '正常'])->label([0 => 'danger', 1 => 'success']);
-            $grid->column('created_at', '注册时间')->sortable();
+            $grid->column('gender', admin_trans_field('gender'))->using(__('users.enums.gender'))->label([0 => 'default', 1 => 'primary', 2 => 'pink']);
+            $grid->column('birthday', admin_trans_field('birthday'));
+            $grid->column('status', admin_trans_field('status'))->using(__('users.enums.status'))->label([0 => 'danger', 1 => 'success']);
+            $grid->column('created_at', admin_trans_field('created_at'))->sortable();
 
             $grid->model()->orderBy('created_at', 'desc');
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');
-                $filter->like('account');
-                $filter->like('phone');
-                $filter->like('email');
-                $filter->like('nickname');
-                $filter->equal('gender')->select([0 => '未知', 1 => '男', 2 => '女']);
-                $filter->equal('status')->select([0 => '禁用', 1 => '正常']);
-                $filter->between('created_at')->datetime();
-                $filter->between('birthday')->date();
+                $filter->like('account', admin_trans_field('account'));
+                $filter->like('phone', admin_trans_field('phone'));
+                $filter->like('email', admin_trans_field('email'));
+                $filter->like('nickname', admin_trans_field('nickname'));
+                $filter->equal('gender', admin_trans_field('gender'))->select(__('users.enums.gender'));
+                $filter->equal('status', admin_trans_field('status'))->select(__('users.enums.status'));
+                $filter->between('created_at', admin_trans_field('created_at'))->datetime();
+                $filter->between('birthday', admin_trans_field('birthday'))->date();
             });
         });
     }
@@ -86,22 +86,22 @@ class UsersController extends AdminController
     {
         return Form::make(new Users(), function (Form $form) {
             $form->display('id');
-            $form->text('account');
-            $form->text('phone');
-            $form->text('email');
-            $form->text('password');
-            $form->text('nickname');
-            $form->mediaSelector('avatar', '头像');
-            $form->text('signature');
-            $form->text('gender');
-            $form->text('birthday');
-            $form->text('status');
-            $form->text('phone_verified_at');
-            $form->text('email_verified_at');
-            $form->text('remember_token');
+            $form->text('account', admin_trans_field('account'));
+            $form->text('phone', admin_trans_field('phone'));
+            $form->text('email', admin_trans_field('email'));
+            $form->text('password', admin_trans_field('password'));
+            $form->text('nickname', admin_trans_field('nickname'));
+            $form->mediaSelector('avatar', admin_trans_field('avatar'));
+            $form->text('signature', admin_trans_field('signature'));
+            $form->text('gender', admin_trans_field('gender'));
+            $form->text('birthday', admin_trans_field('birthday'));
+            $form->text('status', admin_trans_field('status'));
+            $form->text('phone_verified_at', admin_trans_field('phone_verified_at'));
+            $form->text('email_verified_at', admin_trans_field('email_verified_at'));
+            $form->text('remember_token', admin_trans_field('remember_token'));
         
-            $form->display('created_at');
-            $form->display('updated_at');
+            $form->display('created_at', admin_trans_field('created_at'));
+            $form->display('updated_at', admin_trans_field('updated_at'));
         });
     }
 }

@@ -24,3 +24,6 @@ use Dcat\Admin\Show;
  * Admin::js('/packages/prettydocs/js/main.js');
  *
  */
+
+// 顶栏右侧语言切换下拉（多语言：zh_CN / en / zh_TW）
+\Dcat\Admin\Admin::navbar()->right(view('admin.locale-switcher'));

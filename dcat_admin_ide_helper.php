@@ -66,6 +66,11 @@ namespace Dcat\Admin {
      * @property Grid\Column|Collection user_agent
      * @property Grid\Column|Collection content
      * @property Grid\Column|Collection deleted_at
+     * @property Grid\Column|Collection is_show
+     * @property Grid\Column|Collection sort
+     * @property Grid\Column|Collection answer
+     * @property Grid\Column|Collection category_id
+     * @property Grid\Column|Collection question
      * @property Grid\Column|Collection nickname
      * @property Grid\Column|Collection openid
      * @property Grid\Column|Collection raw
@@ -135,6 +140,11 @@ namespace Dcat\Admin {
      * @method Grid\Column|Collection user_agent(string $label = null)
      * @method Grid\Column|Collection content(string $label = null)
      * @method Grid\Column|Collection deleted_at(string $label = null)
+     * @method Grid\Column|Collection is_show(string $label = null)
+     * @method Grid\Column|Collection sort(string $label = null)
+     * @method Grid\Column|Collection answer(string $label = null)
+     * @method Grid\Column|Collection category_id(string $label = null)
+     * @method Grid\Column|Collection question(string $label = null)
      * @method Grid\Column|Collection nickname(string $label = null)
      * @method Grid\Column|Collection openid(string $label = null)
      * @method Grid\Column|Collection raw(string $label = null)
@@ -209,6 +219,11 @@ namespace Dcat\Admin {
      * @property Show\Field|Collection user_agent
      * @property Show\Field|Collection content
      * @property Show\Field|Collection deleted_at
+     * @property Show\Field|Collection is_show
+     * @property Show\Field|Collection sort
+     * @property Show\Field|Collection answer
+     * @property Show\Field|Collection category_id
+     * @property Show\Field|Collection question
      * @property Show\Field|Collection nickname
      * @property Show\Field|Collection openid
      * @property Show\Field|Collection raw
@@ -278,6 +293,11 @@ namespace Dcat\Admin {
      * @method Show\Field|Collection user_agent(string $label = null)
      * @method Show\Field|Collection content(string $label = null)
      * @method Show\Field|Collection deleted_at(string $label = null)
+     * @method Show\Field|Collection is_show(string $label = null)
+     * @method Show\Field|Collection sort(string $label = null)
+     * @method Show\Field|Collection answer(string $label = null)
+     * @method Show\Field|Collection category_id(string $label = null)
+     * @method Show\Field|Collection question(string $label = null)
      * @method Show\Field|Collection nickname(string $label = null)
      * @method Show\Field|Collection openid(string $label = null)
      * @method Show\Field|Collection raw(string $label = null)
@@ -295,7 +315,8 @@ namespace Dcat\Admin {
     class Show {}
 
     /**
-     
+     * @method \App\Admin\Form\Field\MediaSelector mediaSelector(...$params)
+     * @method \Weiaibaicai\Ueditor\Form\UEditor ueditor(...$params)
      */
     class Form {}
 

@@ -18,7 +18,7 @@ class MediaSelector extends Field
             ->defaultAttribute('name', $this->getElementName())
             ->defaultAttribute('value', $this->value())
             ->defaultAttribute('class', 'form-control '.$this->getElementClassString())
-            ->defaultAttribute('placeholder', '点击右侧按钮从媒体库选择');
+            ->defaultAttribute('placeholder', __('media-selector.placeholder'));
 
         Admin::style($this->style());
         Admin::script($this->buildScript());
@@ -55,7 +55,7 @@ class MediaSelector extends Field
             <input {$attributes}>
             <span class="input-group-append">
                 <button type="button" class="btn btn-primary media-selector-open">
-                    <i class="feather icon-image"></i>&nbsp;从媒体库选择
+                    <i class="feather icon-image"></i>&nbsp;<?= e(__('media-selector.select_button')) ?>
                 </button>
             </span>
         </div>
@@ -90,6 +90,7 @@ CSS;
 (function () {
     var MEDIA_LIST_URL = %s1;
     var MEDIA_UPLOAD_URL = %s2;
+    var MS_TEXT = %s3;
 
     // 渲染单个媒体项（列表加载与上传共用），prepend=true 时插入列表顶部
     function renderItem(item, $box, $input, $preview, layerIndex, prepend) {
@@ -118,14 +119,14 @@ CSS;
 
             var layerIndex = layer.open({
                 type: 1,
-                title: '从媒体库选择',
+                title: MS_TEXT.modal_title,
                 area: ['85%', '85%'],
                 content: '<div style="height:100%;display:flex;flex-direction:column;">' +
                     '<div class="media-selector-upload">' +
-                        '<button type="button" class="btn btn-success media-selector-upload-btn"><i class="feather icon-upload"></i>&nbsp;上传图片</button>' +
+                        '<button type="button" class="btn btn-success media-selector-upload-btn"><i class="feather icon-upload"></i>&nbsp;' + MS_TEXT.upload_button + '</button>' +
                         '<input type="file" accept="image/*" class="media-selector-file" style="display:none;">' +
                     '</div>' +
-                    '<div class="media-selector-list" style="flex:1;overflow:auto;"><div class="text-center" style="width:100%;padding:60px 0;color:#999;"><i class="feather icon-loader" style="font-size:36px;display:inline-block;animation:ms-spin 1.2s linear infinite;"></i><br>加载中...</div></div>' +
+                    '<div class="media-selector-list" style="flex:1;overflow:auto;"><div class="text-center" style="width:100%;padding:60px 0;color:#999;"><i class="feather icon-loader" style="font-size:36px;display:inline-block;animation:ms-spin 1.2s linear infinite;"></i><br>' + MS_TEXT.loading + '</div></div>' +
                 '</div>'
             });
 
@@ -146,7 +147,7 @@ CSS;
                 }
 
                 var originalHtml = $uploadBtn.html();
-                $uploadBtn.prop('disabled', true).html('<i class="feather icon-loader" style="display:inline-block;animation:ms-spin 1.2s linear infinite;"></i>&nbsp;上传中...');
+                $uploadBtn.prop('disabled', true).html('<i class="feather icon-loader" style="display:inline-block;animation:ms-spin 1.2s linear infinite;"></i>&nbsp;' + MS_TEXT.uploading);
 
                 var formData = new FormData();
                 formData.append('file', file);
@@ -162,11 +163,11 @@ CSS;
                         $uploadBtn.prop('disabled', false).html(originalHtml);
 
                         if (!res || res.code !== 0) {
-                            Dcat.error((res && res.message) || '上传失败');
+                            Dcat.error((res && res.message) || MS_TEXT.upload_failed);
                             return;
                         }
 
-                        Dcat.success('上传成功');
+                        Dcat.success(MS_TEXT.upload_success);
                         // 新图片插入列表顶部；若当前是空态提示则先清空
                         if ($box.children('.text-center').length) {
                             $box.empty();
@@ -175,7 +176,7 @@ CSS;
                     },
                     error: function () {
                         $uploadBtn.prop('disabled', false).html(originalHtml);
-                        Dcat.error('上传失败');
+                        Dcat.error(MS_TEXT.upload_failed);
                     }
                 });
 
@@ -188,7 +189,7 @@ CSS;
                 dataType: 'json',
                 success: function (res) {
                     if (!res || res.code !== 0) {
-                        Dcat.error((res && res.message) || '媒体列表加载失败');
+                        Dcat.error((res && res.message) || MS_TEXT.load_failed);
                         layer.close(layerIndex);
                         return;
                     }
@@ -197,7 +198,7 @@ CSS;
 
                     var list = res.data || [];
                     if (!list.length) {
-                        $box.html('<div class="text-center" style="width:100%;padding:60px 0;color:#999;">媒体库暂无文件，请先到「媒体管理」页面上传</div>');
+                        $box.html('<div class="text-center" style="width:100%;padding:60px 0;color:#999;">' + MS_TEXT.empty + '</div>');
                         return;
                     }
 
@@ -206,7 +207,7 @@ CSS;
                     });
                 },
                 error: function () {
-                    Dcat.error('媒体列表加载失败');
+                    Dcat.error(MS_TEXT.load_failed);
                     layer.close(layerIndex);
                 }
             });
@@ -216,10 +217,21 @@ CSS;
 JS;
 
         return str_replace(
-            ['%s1', '%s2'],
+            ['%s1', '%s2', '%s3'],
             [
                 json_encode(admin_base_path('media-selector/list')),
                 json_encode(admin_base_path('media-selector/upload')),
+                json_encode([
+                    'select_button'  => __('media-selector.select_button'),
+                    'upload_button'  => __('media-selector.upload_button'),
+                    'modal_title'    => __('media-selector.modal_title'),
+                    'uploading'      => __('media-selector.uploading'),
+                    'upload_success' => __('media-selector.upload_success'),
+                    'empty'          => __('media-selector.empty'),
+                    'load_failed'    => __('media-selector.load_failed'),
+                    'upload_failed'  => __('media-selector.upload_failed'),
+                    'loading'        => __('media-selector.loading'),
+                ]),
             ],
             $template
         );
