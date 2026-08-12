@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index()->comment('用户ID');
             $table->string('type', 30)->comment('三方类型：wechat_mini-微信小程序 wechat_mp-微信公众号 wechat_app-微信APP apple-苹果 other-其他');
             $table->string('openid', 100)->nullable()->comment('三方openid');
+            $table->string('session_key', 64)->nullable()->comment('小程序session_key（用于手机号解密）');
             $table->string('unionid', 100)->nullable()->comment('三方unionid');
             $table->string('nickname', 50)->nullable()->comment('三方昵称');
             $table->string('avatar', 255)->nullable()->comment('三方头像');
