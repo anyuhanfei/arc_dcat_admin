@@ -281,3 +281,59 @@ function admin_dialog_frame_button($url, $title, $icon = 'feather icon-folder', 
 
     return '<a href="javascript:void(0)" class="'.e($class).'" onclick="'.e($onclick).'"><i class="'.$icon.'"></i>&nbsp;'.e($title).'</a>';
 }
+
+/**
+ * 获取币种名称（按当前语言）
+ *
+ * @param  string      $currency 币种标识（config('wallet.currencies') 的 key）
+ * @param  string|null $locale   语言，默认当前 app locale
+ * @return string 名称；币种或语言未配置时返回币种标识本身
+ */
+function wallet_currency_name($currency, $locale = null)
+{
+    $locale = $locale ?: app()->getLocale();
+
+    return config('wallet.currencies.'.$currency.'.name.'.$locale, $currency);
+}
+
+/**
+ * 用户信息名片（左头像 + 右昵称/ID/手机号上下分布）
+ * 用于所有与用户关联的后台列表的用户信息展示
+ *
+ * @param mixed       $user    用户模型（需有 id/nickname/avatar/phone；null 或异常返回默认）
+ * @param string      $default 用户不存在/异常时的文案
+ */
+function admin_user_card($user, $default = '已注销')
+{
+    try {
+        if (! $user || ! isset($user->id)) {
+            return $default;
+        }
+
+        $avatar = ! empty($user->avatar) ? full_url($user->avatar) : config('app.url').'/static/avatar.jpeg';
+
+        return '<div class="d-flex align-items-center" style="min-width:150px">'
+            .'<img src="'.e($avatar).'" data-action="preview-img" class="img img-thumbnail rounded-circle" style="width:50px;height:50px;object-fit:cover;cursor:pointer;flex-shrink:0">'
+            .'<div style="line-height:1.7">'
+            .'<div><i class="feather icon-user"></i>: '.e((string) ($user->nickname ?? ''))
+            .'&nbsp;&nbsp;<span class="label" style="background:#586cb1; font-size:80%; padding: 1px 5px;">'.e((string) $user->id).'</span></div>'
+            .'<div><i class="feather icon-smartphone"></i>: '.e((string) ($user->phone ?? '')).'</div>'
+            .'</div></div>';
+    } catch (\Exception $e) {
+        return $default;
+    }
+}
+
+/**
+ * 获取钱包流水类型名称（按当前语言）
+ *
+ * @param  string      $type   流水类型标识（config('wallet.types') 的 key）
+ * @param  string|null $locale 语言，默认当前 app locale
+ * @return string 名称；类型或语言未配置时返回类型标识本身
+ */
+function wallet_record_type_name($type, $locale = null)
+{
+    $locale = $locale ?: app()->getLocale();
+
+    return config('wallet.types.'.$type.'.name.'.$locale, $type);
+}

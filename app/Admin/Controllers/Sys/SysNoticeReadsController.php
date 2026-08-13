@@ -36,10 +36,8 @@ class SysNoticeReadsController extends AdminController
             $grid->disableRowSelector();
             $grid->disableBatchActions();
 
-            $grid->column('user.id', __('sys-notice-reads.fields.user_id'));
-            $grid->column('user.nickname', __('sys-notice-reads.fields.nickname'));
-            $grid->column('user.avatar', __('sys-notice-reads.fields.avatar'))->display(fn ($v) => $v ? '<img src="'.e(full_url($v)).'" style="height:40px;border-radius:4px;">' : '');
-            $grid->column('user.phone', __('sys-notice-reads.fields.phone'));
+            // 用户信息：名片展示（头像/昵称/ID/手机号；空用户由 helper 兜底显示已注销）
+            $grid->column('user', __('sys-notice-reads.fields.user'))->display(fn ($user) => admin_user_card($user));
             $grid->column('user.email', __('sys-notice-reads.fields.email'));
 
             // 固定筛选当前公告（弹框带 notice_id 传入，不被用户筛选顶掉）

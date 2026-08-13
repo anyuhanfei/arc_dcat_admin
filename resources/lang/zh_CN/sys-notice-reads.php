@@ -8,6 +8,7 @@ return [
     ],
     'fields' => [
         'notice_id' => '公告ID',
+        'user'      => '用户',
         'user_id'   => '用户ID',
         'nickname'  => '昵称',
         'phone'     => '手机号',

@@ -28,4 +28,8 @@ return [
         'users'=> '用户管理',
         'user'=> '用户管理',
     ],
+    'tabs' => [
+        'user_info' => '用户信息',
+        'wallet'    => '钱包',
+    ],
 ];

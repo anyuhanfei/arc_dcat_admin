@@ -83,6 +83,14 @@ namespace Dcat\Admin {
      * @property Grid\Column|Collection raw
      * @property Grid\Column|Collection session_key
      * @property Grid\Column|Collection unionid
+     * @property Grid\Column|Collection after_balance
+     * @property Grid\Column|Collection amount
+     * @property Grid\Column|Collection before_balance
+     * @property Grid\Column|Collection currency
+     * @property Grid\Column|Collection ref1
+     * @property Grid\Column|Collection ref2
+     * @property Grid\Column|Collection remark
+     * @property Grid\Column|Collection balance
      * @property Grid\Column|Collection account
      * @property Grid\Column|Collection birthday
      * @property Grid\Column|Collection email_verified_at
@@ -163,6 +171,14 @@ namespace Dcat\Admin {
      * @method Grid\Column|Collection raw(string $label = null)
      * @method Grid\Column|Collection session_key(string $label = null)
      * @method Grid\Column|Collection unionid(string $label = null)
+     * @method Grid\Column|Collection after_balance(string $label = null)
+     * @method Grid\Column|Collection amount(string $label = null)
+     * @method Grid\Column|Collection before_balance(string $label = null)
+     * @method Grid\Column|Collection currency(string $label = null)
+     * @method Grid\Column|Collection ref1(string $label = null)
+     * @method Grid\Column|Collection ref2(string $label = null)
+     * @method Grid\Column|Collection remark(string $label = null)
+     * @method Grid\Column|Collection balance(string $label = null)
      * @method Grid\Column|Collection account(string $label = null)
      * @method Grid\Column|Collection birthday(string $label = null)
      * @method Grid\Column|Collection email_verified_at(string $label = null)
@@ -248,6 +264,14 @@ namespace Dcat\Admin {
      * @property Show\Field|Collection raw
      * @property Show\Field|Collection session_key
      * @property Show\Field|Collection unionid
+     * @property Show\Field|Collection after_balance
+     * @property Show\Field|Collection amount
+     * @property Show\Field|Collection before_balance
+     * @property Show\Field|Collection currency
+     * @property Show\Field|Collection ref1
+     * @property Show\Field|Collection ref2
+     * @property Show\Field|Collection remark
+     * @property Show\Field|Collection balance
      * @property Show\Field|Collection account
      * @property Show\Field|Collection birthday
      * @property Show\Field|Collection email_verified_at
@@ -328,6 +352,14 @@ namespace Dcat\Admin {
      * @method Show\Field|Collection raw(string $label = null)
      * @method Show\Field|Collection session_key(string $label = null)
      * @method Show\Field|Collection unionid(string $label = null)
+     * @method Show\Field|Collection after_balance(string $label = null)
+     * @method Show\Field|Collection amount(string $label = null)
+     * @method Show\Field|Collection before_balance(string $label = null)
+     * @method Show\Field|Collection currency(string $label = null)
+     * @method Show\Field|Collection ref1(string $label = null)
+     * @method Show\Field|Collection ref2(string $label = null)
+     * @method Show\Field|Collection remark(string $label = null)
+     * @method Show\Field|Collection balance(string $label = null)
      * @method Show\Field|Collection account(string $label = null)
      * @method Show\Field|Collection birthday(string $label = null)
      * @method Show\Field|Collection email_verified_at(string $label = null)

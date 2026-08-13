@@ -26,4 +26,8 @@ return [
     'labels' => [
         'UsersController' => 'Users',
     ],
+    'tabs' => [
+        'user_info' => 'User Info',
+        'wallet'    => 'Wallet',
+    ],
 ];

@@ -6,6 +6,7 @@ return [
     ],
     'fields' => [
         'notice_id' => 'Notice ID',
+        'user'      => 'User',
         'user_id'   => 'User ID',
         'nickname'  => 'Nickname',
         'phone'     => 'Phone',
