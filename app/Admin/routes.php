@@ -29,6 +29,8 @@ Route::group([
     $router->resource('sys/faq-questions', \App\Admin\Controllers\Sys\SysFaqQuestionsController::class);
     $router->resource('sys/article-categories', \App\Admin\Controllers\Sys\SysArticleCategoriesController::class);
     $router->resource('sys/articles', \App\Admin\Controllers\Sys\SysArticlesController::class);
+    $router->resource('sys/notices', \App\Admin\Controllers\Sys\SysNoticesController::class);
+    $router->get('sys/notice-reads', \App\Admin\Controllers\Sys\SysNoticeReadsController::class.'@index');
 
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
 
