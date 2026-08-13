@@ -2,7 +2,9 @@
 
 return [
     'labels' => [
-        'SysArticleCategoriesController' => '文章分类管理',
+        'SysArticleCategories' => '文章分类管理',
+        'sys' => '系统管理',
+        'article-categories' => '文章分类管理',
     ],
     'fields' => [
         'id'      => 'ID',

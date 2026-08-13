@@ -2,7 +2,9 @@
 
 return [
     'labels' => [
-        'SysArticlesController' => '文章管理',
+        'SysArticles' => '文章管理',
+        'sys' => '系统管理',
+        'articles' => '文章管理'
     ],
     'fields' => [
         'id'          => 'ID',

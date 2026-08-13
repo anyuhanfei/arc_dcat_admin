@@ -106,7 +106,21 @@ class SysArticlesController extends AdminController
             $form->text('author', admin_trans_field('author'));
             $form->mediaSelector('image', admin_trans_field('image'));
             $form->textarea('summary', admin_trans_field('summary'));
-            $form->text('keywords', admin_trans_field('keywords'));
+            $form->tags('keywords', admin_trans_field('keywords'))
+                ->saving(function ($value) {
+                    // 提交：tags 数组 → 逗号分隔字符串
+                    if (is_array($value)) {
+                        return implode(',', array_filter(array_map('trim', $value)));
+                    }
+                    return $value;
+                })
+                ->customFormat(function ($value) {
+                    // 编辑回显：数据库字符串 → tags 数组
+                    if (is_array($value)) {
+                        return $value;
+                    }
+                    return $value ? array_filter(array_map('trim', explode(',', (string) $value))) : [];
+                });
             $form->ueditor('content', admin_trans_field('content'));
             $form->radio('status', admin_trans_field('status'))->options(__('sys-articles.enums.status'))->default(0);
         });
