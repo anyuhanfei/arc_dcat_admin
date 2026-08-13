@@ -265,3 +265,19 @@ function full_url($file_path, $catelogue = '/uploads/'){
     }
     return url($catelogue . $file_path);
 }
+
+/**
+ * 生成打开 iframe 弹框的统一按钮（弹框走全局 window.openDcatFrame：mini 布局无侧边栏、80% 尺寸）
+ *  使用方式：后台 Grid tools 中 $tools->append(admin_dialog_frame_button(admin_base_path('sys/xxx'), __('xxx.buttons.xxx')))
+ *
+ * @param string $url   弹框页 URL（admin 路径，如 admin_base_path('sys/xxx')）
+ * @param string $title 弹框标题/按钮文案
+ * @param string $icon  图标类，默认 feather icon-folder
+ * @param string $class 按钮类，默认 btn btn-primary
+ * @return string
+ */
+function admin_dialog_frame_button($url, $title, $icon = 'feather icon-folder', $class = 'btn btn-primary'){
+    $onclick = 'window.openDcatFrame('.json_encode($url).', '.json_encode($title).')';
+
+    return '<a href="javascript:void(0)" class="'.e($class).'" onclick="'.e($onclick).'"><i class="'.$icon.'"></i>&nbsp;'.e($title).'</a>';
+}

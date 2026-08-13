@@ -4,9 +4,7 @@ namespace App\Admin\Controllers\Sys;
 
 use App\Admin\Repositories\Sys\SysFaqQuestions;
 use App\Models\Sys\SysFaqCategories;
-use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
-use Dcat\Admin\Widgets\Modal;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
@@ -36,18 +34,11 @@ class SysFaqQuestionsController extends AdminController
             $grid->column('created_at', admin_trans_field('created_at'));
         
             $grid->tools(function (Grid\Tools $tools) {
-                // 分类管理弹框：宽度覆盖页面约 80%（去掉 lg 固定宽度，由 CSS 控制）
-                Admin::style('.faq-cat-modal .modal-dialog { width: 80% !important; max-width: 80% !important; }');
-
-                $tools->append(
-                    Modal::make()
-                        ->class('faq-cat-modal', true)
-                        ->title('常见问题分类管理')
-                        ->body(
-                            '<iframe src="'.admin_base_path('sys/faq-categories').'" style="width:100%;height:70vh;border:0;border-radius:4px;"></iframe>'
-                        )
-                        ->button('<div class="btn-group filter-button-group dropdown" style="margin-right:3px"><a href="javascript:void(0)" class="btn btn-primary"><i class="feather icon-folder"></i>&nbsp;'.__('sys-faq-questions.buttons.分类管理').'</a></div>')
-                );
+                // 分类管理弹框：统一 helper（openDcatFrame iframe 弹窗 + mini 布局，文案取语言文件）
+                $tools->append(admin_dialog_frame_button(
+                    admin_base_path('sys/faq-categories'),
+                    __('sys-faq-questions.buttons.category_manage')
+                ));
             });
         
             $grid->filter(function (Grid\Filter $filter) {

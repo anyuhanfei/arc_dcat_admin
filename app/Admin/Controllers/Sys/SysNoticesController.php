@@ -3,7 +3,6 @@
 namespace App\Admin\Controllers\Sys;
 
 use App\Admin\Repositories\Sys\SysNotices;
-use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
@@ -25,23 +24,14 @@ class SysNoticesController extends AdminController
             $grid->column('status', admin_trans_field('status'))->using(__('sys-notices.enums.status'))->label([0 => 'default', 1 => 'success']);
             $grid->column('updated_at', admin_trans_field('updated_at'))->sortable();
 
-            // 行内操作：已读用户弹框（图标链接，对齐原版查看/编辑/删除样式；prepend 放「查看」前）
+            // 行内操作：已读用户弹框（OpenFrameAction 通用行内弹框；prepend 放「查看」前）
             $grid->actions(function ($actions) {
-                $actions->prepend(sprintf(
-                    '<a href="javascript:void(0)" onclick="openNoticeReads(%d)" title="%s"><i class="feather icon-users"></i></a>&nbsp;&nbsp;',
-                    $actions->getKey(),
-                    e(__('sys-notices.buttons.read_users'))
+                $actions->prepend(new \App\Admin\Grid\Actions\OpenFrameAction(
+                    fn ($action) => admin_base_path('sys/notice-reads').'?notice_id='.$action->getKey(),
+                    __('sys-notices.buttons.read_users'),
+                    'feather icon-users'
                 ));
             });
-
-            // 全局弹框函数（Admin::script 会自动包 Dcat.ready，勿嵌套 ready；显式挂 window 供行内 onclick 访问）
-            Admin::script(
-                'window.openNoticeReads = function (id) {'
-                .'layer.open({ type: 2, title: '.json_encode(__('sys-notices.buttons.read_users'))
-                .', content: '.json_encode(admin_base_path('sys/notice-reads')).' + "?notice_id=" + id'
-                .', area: ["80%", "70vh"], maxmin: true });'
-                .'}'
-            );
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');

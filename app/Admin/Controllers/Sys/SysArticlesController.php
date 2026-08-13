@@ -4,11 +4,9 @@ namespace App\Admin\Controllers\Sys;
 
 use App\Admin\Repositories\Sys\SysArticles;
 use App\Models\Sys\SysArticleCategories;
-use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
-use Dcat\Admin\Widgets\Modal;
 use Dcat\Admin\Http\Controllers\AdminController;
 
 class SysArticlesController extends AdminController
@@ -38,18 +36,11 @@ class SysArticlesController extends AdminController
             $grid->column('updated_at', admin_trans_field('updated_at'))->sortable();
         
             $grid->tools(function (Grid\Tools $tools) {
-                // 文章分类管理弹框：宽度覆盖页面约 80%（独立 class，避免与 FAQ 弹框样式耦合）
-                Admin::style('.article-cat-modal .modal-dialog { width: 80% !important; max-width: 80% !important; }');
-
-                $tools->append(
-                    Modal::make()
-                        ->class('article-cat-modal', true)
-                        ->title(__('sys-articles.buttons.category_manage_title'))
-                        ->body(
-                            '<iframe src="'.admin_base_path('sys/article-categories').'" style="width:100%;height:70vh;border:0;border-radius:4px;"></iframe>'
-                        )
-                        ->button('<a href="javascript:void(0)" class="btn btn-primary"><i class="feather icon-folder"></i>&nbsp;'.e(__('sys-articles.buttons.category_manage')).'</a>')
-                );
+                // 文章分类管理弹框：统一 helper（openDcatFrame iframe 弹窗 + mini 布局，文案取语言文件）
+                $tools->append(admin_dialog_frame_button(
+                    admin_base_path('sys/article-categories'),
+                    __('sys-articles.buttons.category_manage')
+                ));
             });
         
             $grid->filter(function (Grid\Filter $filter) {

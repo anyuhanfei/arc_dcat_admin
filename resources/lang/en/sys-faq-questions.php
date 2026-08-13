@@ -10,7 +10,8 @@ return [
         'created_at'  => 'Created At',
     ],
     'buttons' => [
-        '分类管理' => 'Manage Categories',
+        'category_manage'       => 'Manage Categories',
+        'category_manage_title' => 'FAQ Categories',
     ],
     'enums' => [
         'is_show' => [0 => 'Hidden', 1 => 'Visible'],

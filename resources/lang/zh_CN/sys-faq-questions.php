@@ -10,7 +10,8 @@ return [
         'created_at'  => '创建时间',
     ],
     'buttons' => [
-        '分类管理' => '分类管理',
+        'category_manage'       => '分类管理',
+        'category_manage_title' => '常见问题分类管理',
     ],
     'enums' => [
         'is_show' => [0 => '隐藏', 1 => '显示'],
