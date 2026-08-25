@@ -4,6 +4,7 @@ namespace App\Models\Sys;
 
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -22,5 +23,13 @@ class SysFaqQuestions extends Model implements Sortable
 
     // 显示状态枚举映射
     public const IS_SHOW = [0 => '隐藏', 1 => '显示'];
+
+    /**
+     * 所属分类
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(SysFaqCategories::class, 'category_id');
+    }
     
 }

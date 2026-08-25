@@ -23,11 +23,15 @@ class AgreementsService
     /**
      * 获取协议详情
      *
-     * @throws ModelNotFoundException
+     * @throws \App\Exceptions\BusinessException
      */
     public function detail(int $id): array
     {
-        $agreement = $this->repository->findById($id);
+        try {
+            $agreement = $this->repository->findById($id);
+        } catch (ModelNotFoundException) {
+            throwBusinessException('协议不存在');
+        }
 
         return [
             'id'      => $agreement->id,

@@ -4,6 +4,7 @@ namespace App\Models\Sys;
 
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SysArticles extends Model
 {
@@ -18,5 +19,13 @@ class SysArticles extends Model
         self::STATUS_DRAFT => '草稿',
         self::STATUS_PUBLISHED => '发布',
     ];
+
+    /**
+     * 所属文章分类
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(SysArticleCategories::class, 'category_id');
+    }
     
 }

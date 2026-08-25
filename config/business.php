@@ -98,4 +98,32 @@ return [
             ],
         ],
     ],
+
+    // ============ App 版本配置 ============
+    'app_version' => [
+        // 端配置（标识 => 多语言名称），增删改 = 修改本数组
+        'platforms' => [
+            'android' => [
+                'name' => [
+                    'zh_CN' => 'Android',
+                    'en'     => 'Android',
+                    'zh_TW' => 'Android',
+                ],
+            ],
+            'ios' => [
+                'name' => [
+                    'zh_CN' => 'iOS',
+                    'en'     => 'iOS',
+                    'zh_TW' => 'iOS',
+                ],
+            ],
+            'harmony' => [
+                'name' => [
+                    'zh_CN' => '鸿蒙',
+                    'en'     => 'HarmonyOS',
+                    'zh_TW' => '鴻蒙',
+                ],
+            ],
+        ],
+    ],
 ];

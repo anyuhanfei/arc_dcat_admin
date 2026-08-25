@@ -80,6 +80,8 @@ class SysBannersController extends AdminController
             $form->display('id', admin_trans_field('id'));
             $form->select('position', admin_trans_field('position'))->options($this->positionOptions())->default('home')->required();
             $form->mediaSelector('image', admin_trans_field('image'))->required();
+            // 隐藏字段：saving 注入的 link_value 需有对应字段对象，否则会被 prepareInsert/prepareUpdate 过滤
+            $form->hidden('link_value');
             // link_type 动态显隐（Dcat when 级联）：选中类型才渲染对应关联字段；虚拟字段不落库
             $form->select('link_type', admin_trans_field('link_type'))
                 ->options($this->linkTypeOptions())

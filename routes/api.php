@@ -7,6 +7,23 @@ use Illuminate\Support\Facades\Route;
 Route::post('sys/agreements/list', [\App\Api\Controllers\Sys\AgreementsController::class, 'index']);
 Route::post('sys/agreements/detail', [\App\Api\Controllers\Sys\AgreementsController::class, 'show']);
 
+// 常见问题相关（公开接口）
+Route::post('sys/faq/categories', [\App\Api\Controllers\Sys\FaqController::class, 'categories']);
+Route::post('sys/faq/questions', [\App\Api\Controllers\Sys\FaqController::class, 'questions']);
+
+// 轮播图相关（公开接口）
+Route::post('sys/banners/list', [\App\Api\Controllers\Sys\BannersController::class, 'index']);
+
+// 文章相关（公开接口）
+Route::post('sys/articles/categories', [\App\Api\Controllers\Sys\ArticlesController::class, 'categories']);
+Route::post('sys/articles/list', [\App\Api\Controllers\Sys\ArticlesController::class, 'index']);
+Route::post('sys/articles/detail', [\App\Api\Controllers\Sys\ArticlesController::class, 'show']);
+
+// 公告相关（公开接口）
+Route::post('sys/notices/list', [\App\Api\Controllers\Sys\NoticesController::class, 'index']);
+Route::post('sys/notices/detail', [\App\Api\Controllers\Sys\NoticesController::class, 'show']);
+Route::post('sys/notices/latest', [\App\Api\Controllers\Sys\NoticesController::class, 'latest']);
+
 // 登录相关（公开接口）
 Route::prefix('login')->group(function () {
     Route::post('password/login', [\App\Api\Controllers\Login\PasswordController::class, 'login']);
