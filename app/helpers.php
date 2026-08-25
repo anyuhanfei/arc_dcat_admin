@@ -285,7 +285,7 @@ function admin_dialog_frame_button($url, $title, $icon = 'feather icon-folder', 
 /**
  * 获取币种名称（按当前语言）
  *
- * @param  string      $currency 币种标识（config('wallet.currencies') 的 key）
+ * @param  string      $currency 币种标识（config('business.wallet.*') 的 key）
  * @param  string|null $locale   语言，默认当前 app locale
  * @return string 名称；币种或语言未配置时返回币种标识本身
  */
@@ -293,7 +293,7 @@ function wallet_currency_name($currency, $locale = null)
 {
     $locale = $locale ?: app()->getLocale();
 
-    return config('wallet.currencies.'.$currency.'.name.'.$locale, $currency);
+    return config('business.wallet.currencies.'.$currency.'.name.'.$locale, $currency);
 }
 
 /**
@@ -327,7 +327,7 @@ function admin_user_card($user, $default = '已注销')
 /**
  * 获取钱包流水类型名称（按当前语言）
  *
- * @param  string      $type   流水类型标识（config('wallet.types') 的 key）
+ * @param  string      $type   流水类型标识（config('business.wallet.*') 的 key）
  * @param  string|null $locale 语言，默认当前 app locale
  * @return string 名称；类型或语言未配置时返回类型标识本身
  */
@@ -335,5 +335,5 @@ function wallet_record_type_name($type, $locale = null)
 {
     $locale = $locale ?: app()->getLocale();
 
-    return config('wallet.types.'.$type.'.name.'.$locale, $type);
+    return config('business.wallet.types.'.$type.'.name.'.$locale, $type);
 }

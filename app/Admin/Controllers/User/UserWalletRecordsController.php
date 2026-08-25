@@ -27,7 +27,7 @@ class UserWalletRecordsController extends AdminController
                 $selector->select(
                     'currency',
                     __('user-wallet-records.fields.currency'),
-                    collect(config('wallet.currencies'))->mapWithKeys(fn ($c, $k) => [$k => wallet_currency_name($k)])->toArray()
+                    collect(config('business.wallet.currencies'))->mapWithKeys(fn ($c, $k) => [$k => wallet_currency_name($k)])->toArray()
                 );
             });
 

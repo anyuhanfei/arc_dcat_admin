@@ -140,7 +140,7 @@ class UsersController extends AdminController
      */
     protected function buildWalletFields(Form $form)
     {
-        foreach (config('wallet.currencies') as $currency => $cfg) {
+        foreach (config('business.wallet.currencies') as $currency => $cfg) {
             $name = wallet_currency_name($currency);
             $balance = \App\Models\User\UserWallet::where('user_id', $form->model()->id)
                 ->where('currency', $currency)
@@ -153,7 +153,7 @@ class UsersController extends AdminController
         }
 
         // 钱包虚拟字段（增减金额/说明）不写入用户表
-        $form->ignore(collect(config('wallet.currencies'))->flatMap(fn ($cfg, $c) => ["wallet_amount_{$c}", "wallet_remark_{$c}"])->all());
+        $form->ignore(collect(config('business.wallet.currencies'))->flatMap(fn ($cfg, $c) => ["wallet_amount_{$c}", "wallet_remark_{$c}"])->all());
     }
 
     /**
@@ -169,7 +169,7 @@ class UsersController extends AdminController
         }
 
         $changes = [];
-        foreach (config('wallet.currencies') as $currency => $cfg) {
+        foreach (config('business.wallet.currencies') as $currency => $cfg) {
             $name = wallet_currency_name($currency);
             // 注：钱包虚拟字段已被 $form->ignore() 排除，且 Form::prepare() 在 saving 回调前就移除了它们——
             //     必须从原始请求读取（ignore 只影响 $form->inputs，不影响 request）

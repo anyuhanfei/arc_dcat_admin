@@ -24,6 +24,7 @@ Route::group([
     $router->get('media-selector/list', [\App\Admin\Controllers\MediaSelectorController::class, 'list']);
     $router->post('media-selector/upload', [\App\Admin\Controllers\MediaSelectorController::class, 'upload']);
 
+    $router->resource('sys/banners', \App\Admin\Controllers\Sys\SysBannersController::class);
     $router->resource('sys/agreements', \App\Admin\Controllers\Sys\SysAgreementsController::class);
     $router->resource('sys/faq-categories', \App\Admin\Controllers\Sys\SysFaqCategoriesController::class);
     $router->resource('sys/faq-questions', \App\Admin\Controllers\Sys\SysFaqQuestionsController::class);

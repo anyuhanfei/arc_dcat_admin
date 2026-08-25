@@ -75,6 +75,9 @@ namespace Dcat\Admin {
      * @property Grid\Column|Collection keywords
      * @property Grid\Column|Collection status
      * @property Grid\Column|Collection summary
+     * @property Grid\Column|Collection link_type
+     * @property Grid\Column|Collection link_value
+     * @property Grid\Column|Collection position
      * @property Grid\Column|Collection answer
      * @property Grid\Column|Collection question
      * @property Grid\Column|Collection notice_id
@@ -163,6 +166,9 @@ namespace Dcat\Admin {
      * @method Grid\Column|Collection keywords(string $label = null)
      * @method Grid\Column|Collection status(string $label = null)
      * @method Grid\Column|Collection summary(string $label = null)
+     * @method Grid\Column|Collection link_type(string $label = null)
+     * @method Grid\Column|Collection link_value(string $label = null)
+     * @method Grid\Column|Collection position(string $label = null)
      * @method Grid\Column|Collection answer(string $label = null)
      * @method Grid\Column|Collection question(string $label = null)
      * @method Grid\Column|Collection notice_id(string $label = null)
@@ -256,6 +262,9 @@ namespace Dcat\Admin {
      * @property Show\Field|Collection keywords
      * @property Show\Field|Collection status
      * @property Show\Field|Collection summary
+     * @property Show\Field|Collection link_type
+     * @property Show\Field|Collection link_value
+     * @property Show\Field|Collection position
      * @property Show\Field|Collection answer
      * @property Show\Field|Collection question
      * @property Show\Field|Collection notice_id
@@ -344,6 +353,9 @@ namespace Dcat\Admin {
      * @method Show\Field|Collection keywords(string $label = null)
      * @method Show\Field|Collection status(string $label = null)
      * @method Show\Field|Collection summary(string $label = null)
+     * @method Show\Field|Collection link_type(string $label = null)
+     * @method Show\Field|Collection link_value(string $label = null)
+     * @method Show\Field|Collection position(string $label = null)
      * @method Show\Field|Collection answer(string $label = null)
      * @method Show\Field|Collection question(string $label = null)
      * @method Show\Field|Collection notice_id(string $label = null)
