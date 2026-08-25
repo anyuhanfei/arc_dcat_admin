@@ -21,5 +21,9 @@ return [
         'faq'            => 'FAQ',
         'faq_categories' => 'FAQ Categories',
         'systems'        => 'System',
+        'articles'       => 'Articles',
+        'banners'        => 'Banners',
+        'notices'        => 'Notices',
+        'user-wallet-records'   => 'User Wallet Records',
     ],
 ];

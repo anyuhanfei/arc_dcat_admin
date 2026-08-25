@@ -10,7 +10,6 @@ return [
     ],
     'labels' => [
         'SysAgreements' => '协议配置管理',
-        'sys' => '系统管理',
         'agreements' => '协议配置',
     ],
 ];

@@ -2,7 +2,8 @@
 
 return [
     'labels' => [
-        'SysBannersController' => '轮播图管理',
+        'SysBanners' => '轮播图管理',
+        'banners' => '轮播图管理',
     ],
     'fields' => [
         'id'            => 'ID',

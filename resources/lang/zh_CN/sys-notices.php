@@ -3,7 +3,6 @@
 return [
     'labels' => [
         'SysNotices' => '公告管理',
-        'sys'         => '系统管理',
         'notices'      => '公告管理',
     ],
     'fields' => [

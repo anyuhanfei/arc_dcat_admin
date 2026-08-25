@@ -11,7 +11,6 @@ return [
     ],
     'labels' => [
         'SysFaqCategories' => '常见问题分类管理',
-        'sys' => '系统管理',
         'faq-categories' => '常见问题分类管理'
     ],
 ];

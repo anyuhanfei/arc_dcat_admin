@@ -19,7 +19,6 @@ return [
     'labels' => [
         'SysFaqQuestions' => '常见问题管理',
         'faq' => '常见问题管理',
-        'sys' => '系统管理',
         'faq-questions' => '常见问题管理'
     ],
 ];

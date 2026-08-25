@@ -30,11 +30,13 @@ return [
         'create'   => '创建',
         'root'     => '顶级',
         'scaffold' => '代码生成器',
-        'auth' => '系统管理',
+        'auth' => '权限管理',
         'roles' => '角色管理',
         'permissions' => '规则管理',
         'menus' => '菜单管理',
         'users' => '管理员管理',
+        'sys'=> '系统管理',
+        'user'=> '管理员管理'
     ],
     'options' => [
 

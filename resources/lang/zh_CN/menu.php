@@ -3,7 +3,7 @@
 return [
     'titles' => [
         'index'          => '首页',
-        'admin'          => '系统管理',
+        'admin'          => '权限管理',
         'admin_users'    => '管理员管理',
         'roles'          => '角色管理',
         'permission'     => '规则管理',
@@ -21,9 +21,13 @@ return [
         'faq'            => '常见问题管理',
         'faq_categories' => '常见问题分类管理',
         'systems'        => '系统管理',
+        'articles'       => '文章管理',
+        'banners'        => '轮播图管理',
+        'notices'        => '公告管理',
+        'user-wallet-records' => '钱包流水记录',
     ],
     'labels' => [
-        'auth' => '系统管理',
+        'auth' => '权限管理',
         'menu' => '菜单管理',
     ],
 ];

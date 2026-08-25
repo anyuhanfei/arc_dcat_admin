@@ -3,7 +3,6 @@
 return [
     'labels' => [
         'SysArticleCategories' => '文章分类管理',
-        'sys' => '系统管理',
         'article-categories' => '文章分类管理',
     ],
     'fields' => [

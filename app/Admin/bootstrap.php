@@ -26,7 +26,7 @@ use Dcat\Admin\Show;
  *
  */
 
-// 顶栏右侧语言切换下拉（多语言：zh_CN / en / zh_TW）
+// 顶栏右侧语言切换下拉（多语言：zh_CN / en）
 \Dcat\Admin\Admin::navbar()->right(view('admin.locale-switcher'));
 
 // 全部 Grid 弹窗化：新增/编辑/查看在 80% 弹窗中完成（菜单管理用 Tree 组件，天然不受影响）

@@ -3,7 +3,6 @@
 return [
     'labels' => [
         'SysNoticeReadsController' => '列表',
-        'sys'         => '系统管理',
         'notice-reads' => '公告已读用户列表'
     ],
     'fields' => [

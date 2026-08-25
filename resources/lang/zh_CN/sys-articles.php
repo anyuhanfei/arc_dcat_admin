@@ -3,7 +3,6 @@
 return [
     'labels' => [
         'SysArticles' => '文章管理',
-        'sys' => '系统管理',
         'articles' => '文章管理'
     ],
     'fields' => [
