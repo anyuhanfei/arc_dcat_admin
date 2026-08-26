@@ -25,5 +25,6 @@ return [
         'banners'        => 'Banners',
         'notices'        => 'Notices',
         'user-wallet-records'   => 'User Wallet Records',
+        'app-versions' => "App Versions"
     ],
 ];

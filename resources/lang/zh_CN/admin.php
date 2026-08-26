@@ -191,7 +191,7 @@ return [
         'go_on_add'              => '继续添加',
         'Q_TYPE_DENIED'          => '对不起，不允许上传此类型文件',
         'Q_EXCEED_NUM_LIMIT'     => '对不起，已超出文件上传数量限制，最多只能上传:num个文件',
-        'F_EXCEED_SIZE'          => '对不起，当前选择的文件过大',
+        'F_EXCEED_SIZE'          => '对不起，当前选择的文件过大，单个文件大小不能超过 100M',
         'Q_EXCEED_SIZE_LIMIT'    => '对不起，已超出文件大小限制',
         'F_DUPLICATE'            => '文件重复',
         'confirm_delete_file'    => '您确定要删除这个文件吗?',

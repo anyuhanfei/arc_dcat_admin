@@ -32,6 +32,7 @@ Route::group([
     $router->resource('sys/articles', \App\Admin\Controllers\Sys\SysArticlesController::class);
     $router->resource('sys/notices', \App\Admin\Controllers\Sys\SysNoticesController::class);
     $router->get('sys/notice-reads', \App\Admin\Controllers\Sys\SysNoticeReadsController::class.'@index');
+    $router->resource('sys/app-versions', \App\Admin\Controllers\Sys\SysAppVersionsController::class);
 
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
     $router->get('user/user-wallet-records', \App\Admin\Controllers\User\UserWalletRecordsController::class.'@index');

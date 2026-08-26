@@ -101,27 +101,20 @@ return [
 
     // ============ App 版本配置 ============
     'app_version' => [
-        // 端配置（标识 => 多语言名称），增删改 = 修改本数组
-        'platforms' => [
-            'android' => [
+        // 端（App）配置（标识 => 多语言名称），如用户端/员工端；增删改 = 修改本数组
+        'apps' => [
+            'user' => [
                 'name' => [
-                    'zh_CN' => 'Android',
-                    'en'     => 'Android',
-                    'zh_TW' => 'Android',
+                    'zh_CN' => '用户端',
+                    'en'     => 'User App',
+                    'zh_TW' => '用戶端',
                 ],
             ],
-            'ios' => [
+            'staff' => [
                 'name' => [
-                    'zh_CN' => 'iOS',
-                    'en'     => 'iOS',
-                    'zh_TW' => 'iOS',
-                ],
-            ],
-            'harmony' => [
-                'name' => [
-                    'zh_CN' => '鸿蒙',
-                    'en'     => 'HarmonyOS',
-                    'zh_TW' => '鴻蒙',
+                    'zh_CN' => '员工端',
+                    'en'     => 'Staff App',
+                    'zh_TW' => '員工端',
                 ],
             ],
         ],

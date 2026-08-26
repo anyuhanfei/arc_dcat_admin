@@ -25,6 +25,7 @@ return [
         'banners'        => '轮播图管理',
         'notices'        => '公告管理',
         'user-wallet-records' => '钱包流水记录',
+        'app-versions'  => 'APP版本管理',
     ],
     'labels' => [
         'auth' => '权限管理',

@@ -183,6 +183,54 @@ function admin_form_image_field($image_obj){
 }
 
 /**
+ * 后台文件上传表单处理（wgt/apk 等非图片文件）
+ *  使用方法，将 form() 中的文件表单对象传入此方法，如：
+ *  admin_form_file_field($form->file('wgt', admin_trans_field('wgt')), ['wgt'], 100, true)
+ *
+ * @param mixed $file_obj    Dcat file 表单字段对象（$form->file(...) 返回值）
+ * @param array $extensions  允许的文件扩展名（小写），如 ['wgt'] / ['apk']
+ * @param int   $maxSizeMb   允许的最大文件大小（MB），默认 100
+ * @param bool  $required    是否必填，默认 false
+ * @return mixed
+ */
+function admin_form_file_field($file_obj, array $extensions = ['wgt'], int $maxSizeMb = 100, bool $required = false){
+    $exts = array_values(array_filter(array_map('strtolower', $extensions)));
+
+    // 扩展名校验闭包：上传端点校验时 $value 为 UploadedFile，表单提交/编辑回显时是已存路径字符串，两种都兼容
+    $extRule = function ($attribute, $value, $fail) use ($exts) {
+        if ($value === null || $value === '') {
+            return;
+        }
+        $actual = $value instanceof \Illuminate\Http\UploadedFile
+            ? strtolower($value->getClientOriginalExtension())
+            : strtolower(pathinfo((string) $value, PATHINFO_EXTENSION));
+        if (! in_array($actual, $exts, true)) {
+            $fail('仅支持 '.implode('/', $exts).' 格式文件');
+        }
+    };
+
+    return $file_obj
+        ->autoUpload()      // 选择后自动上传
+        ->uniqueName()      // 自动重命名
+        ->removable(false)  // 前端删除按钮（与 admin_form_image_field 一致）
+        ->retainable()      // 不同步移除文件（删除字段时不删磁盘文件）
+        ->accept(implode(',', $exts)) // 允许的文件格式（webuploader accept 逗号分隔）
+        ->options(['fileSingleSizeLimit' => $maxSizeMb * 1024 * 1024]) // 前端单文件大小限制（MB）
+        ->rules(function () use ($required, $extRule) {
+            return $required ? ['required', $extRule] : [$extRule];
+        })
+        ->validator(function ($input) use ($required, $extRule, $file_obj) {
+            $rules = $required ? ['required', $extRule] : [$extRule];
+            return \Illuminate\Support\Facades\Validator::make(
+                $input,
+                [$file_obj->column() => $rules],
+                [],
+                [$file_obj->column() => $file_obj->label()]
+            );
+        });
+}
+
+/**
  * 后台媒体选择表单上传处理
  *  使用方法，将 form() 中的媒体选择表单对象传入此方法
  *
