@@ -29,6 +29,9 @@ use Dcat\Admin\Show;
 // 顶栏右侧语言切换下拉（多语言：zh_CN / en）
 \Dcat\Admin\Admin::navbar()->right(view('admin.locale-switcher'));
 
+// 全局按钮内容垂直居中，统一系统按钮与自定义按钮的显示效果
+Admin::style('.btn { display: inline-flex; align-items: center; justify-content: center; line-height: 1.4;}');
+
 // 全部 Grid 弹窗化：新增/编辑/查看在 80% 弹窗中完成（菜单管理用 Tree 组件，天然不受影响）
 Grid::resolving(function (Grid $grid) {
     $grid->enableDialogCreate();                        // 新增按钮 → 弹窗
