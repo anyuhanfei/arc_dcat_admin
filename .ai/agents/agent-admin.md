@@ -2,7 +2,7 @@
 
 **负责 Dcat-Admin 后台 CRUD 的完整生成（控制器 + Repository + Grid/Form/Show）。**
 
-> **技术栈固定**：Dcat Admin 组件约定（mediaSelector、ueditor、语言文件 enums）为模板固定标准，所有定制项目统一使用。定制项目在此基础上扩展业务模块和后台功能（见根目录 AGENTS.md「定制项目业务规则扩展指南」）。
+> **技术栈固定**：Dcat Admin 组件约定（mediaSelector、ueditor、语言文件 enums）为模板固定标准。
 
 ## 前置必读
 
