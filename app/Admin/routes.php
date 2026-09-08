@@ -33,6 +33,12 @@ Route::group([
     $router->resource('sys/notices', \App\Admin\Controllers\Sys\SysNoticesController::class);
     $router->get('sys/notice-reads', \App\Admin\Controllers\Sys\SysNoticeReadsController::class.'@index');
     $router->resource('sys/app-versions', \App\Admin\Controllers\Sys\SysAppVersionsController::class);
+    $router->resource('sys/config-categories', \App\Admin\Controllers\Sys\SysConfigCategoriesController::class);
+    $router->resource('sys/configs', \App\Admin\Controllers\Sys\SysConfigsController::class);
+    $router->get('sys/config-editor', [\App\Admin\Controllers\Sys\SysConfigEditorController::class, 'index']);
+    $router->post('sys/config-editor', [\App\Admin\Controllers\Sys\SysConfigEditorController::class, 'store']);
+    $router->get('sys/configs/{id}/fill-value', [\App\Admin\Controllers\Sys\SysConfigsController::class, 'fillValue']);
+    $router->put('sys/configs/{id}/fill-value', [\App\Admin\Controllers\Sys\SysConfigsController::class, 'saveFillValue']);
 
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
     $router->get('user/user-wallet-records', \App\Admin\Controllers\User\UserWalletRecordsController::class.'@index');

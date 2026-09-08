@@ -385,3 +385,22 @@ function wallet_record_type_name($type, $locale = null)
 
     return config('business.wallet.types.'.$type.'.name.'.$locale, $type);
 }
+
+/**
+ * 获取系统配置值
+ *
+ * @param string $key 配置键名
+ * @param mixed $default 默认值
+ * @return mixed 配置值；checkbox类型返回数组，其他返回字符串；不存在返回默认值
+ */
+function sys_config(string $key, mixed $default = null): mixed
+{
+    $config = \App\Models\Sys\SysConfigs::query()->where('key', $key)->first();
+    if (! $config) {
+        return $default;
+    }
+    if ($config->type === \App\Enums\ConfigType::CHECKBOX->value) {
+        return $config->value ? json_decode($config->value, true) : [];
+    }
+    return $config->value;
+}

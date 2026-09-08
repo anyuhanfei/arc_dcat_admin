@@ -24,6 +24,9 @@ Route::post('sys/notices/list', [\App\Api\Controllers\Sys\NoticesController::cla
 Route::post('sys/notices/detail', [\App\Api\Controllers\Sys\NoticesController::class, 'show']);
 Route::post('sys/notices/latest', [\App\Api\Controllers\Sys\NoticesController::class, 'latest']);
 
+// 系统配置相关（公开接口）
+Route::post('sys/configs', [\App\Api\Controllers\Sys\ConfigsController::class, 'index']);
+
 // 登录相关（公开接口）
 Route::prefix('login')->group(function () {
     Route::post('password/login', [\App\Api\Controllers\Login\PasswordController::class, 'login']);
