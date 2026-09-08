@@ -5,6 +5,8 @@ namespace App\Api\Controllers\Sys;
 use App\Api\Requests\Sys\ArticleCategoriesRequest;
 use App\Api\Requests\Sys\ArticlesIndexRequest;
 use App\Api\Requests\Sys\ArticlesShowRequest;
+use App\Api\Resources\Sys\ArticleCategoriesResource;
+use App\Api\Resources\Sys\ArticlesResource;
 use App\Api\Services\Sys\ArticlesService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -46,7 +48,7 @@ class ArticlesController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->categories();
 
-        return success('success', $result);
+        return success('success', ArticleCategoriesResource::collection($result)->toArray($request));
     }
 
     #[
@@ -103,12 +105,23 @@ class ArticlesController extends \Illuminate\Routing\Controller
     ]
     public function index(ArticlesIndexRequest $request): JsonResponse
     {
-        $result = $this->service->index(
+        $paginator = $this->service->index(
             $request->input('category_id'),
             $request->integer('per_page', 15),
         );
 
-        return success('success', $result);
+        $data = [
+            'total'       => $paginator->total(),
+            'count'       => $paginator->count(),
+            'perPage'     => $paginator->perPage(),
+            'currentPage' => $paginator->currentPage(),
+            'lastPage'    => $paginator->lastPage(),
+            'firstItem'   => $paginator->firstItem(),
+            'lastItem'    => $paginator->lastItem(),
+            'datas'       => ArticlesResource::collection($paginator->getCollection())->toArray($request),
+        ];
+
+        return success('success', $data);
     }
 
     #[
@@ -156,6 +169,6 @@ class ArticlesController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->show($request->input('id'));
 
-        return success('success', $result);
+        return success('success', (new ArticlesResource($result))->toArray($request));
     }
 }

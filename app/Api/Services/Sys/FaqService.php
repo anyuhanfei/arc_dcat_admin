@@ -3,8 +3,8 @@
 namespace App\Api\Services\Sys;
 
 use App\Api\Repositories\Sys\FaqRepository;
-use App\Models\Sys\SysFaqQuestions;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FaqService
 {
@@ -25,18 +25,8 @@ class FaqService
      *
      * @param int|null $categoryId 分类ID，为空时返回全部分类
      */
-    public function questions(?int $categoryId, int $perPage): array
+    public function questions(?int $categoryId, int $perPage): LengthAwarePaginator
     {
-        $paginator = $this->repository->paginate($categoryId, $perPage);
-
-        return format_paginated_datas($paginator, ['*'], function (SysFaqQuestions $item) {
-            return [
-                'id'            => $item->id,
-                'category_id'   => $item->category_id,
-                'category_name' => $item->category->name ?? '',
-                'question'      => $item->question,
-                'answer'        => $item->answer,
-            ];
-        });
+        return $this->repository->paginate($categoryId, $perPage);
     }
 }

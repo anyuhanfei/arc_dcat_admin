@@ -7,9 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserWallet extends Model
 {
-	use HasDateTimeFormatter;
+    use HasDateTimeFormatter;
 
     protected $table = 'user_wallets';
+
+    protected $fillable = ['user_id', 'currency', 'balance'];
+
+    protected function casts(): array
+    {
+        return [
+            'user_id' => 'integer',
+            'balance' => 'decimal:2',
+        ];
+    }
 
     /**
      * 所属用户

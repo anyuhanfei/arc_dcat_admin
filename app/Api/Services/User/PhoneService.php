@@ -2,7 +2,7 @@
 
 namespace App\Api\Services\User;
 
-use App\Api\Repositories\Login\PasswordRepository;
+use App\Api\Repositories\User\UserRepository;
 use App\Integrations\Sms\Sms;
 use App\Models\User;
 
@@ -10,13 +10,13 @@ class PhoneService
 {
     public function __construct(
         protected VerifyTokenService $verifyToken,
-        protected PasswordRepository $repository,
+        protected UserRepository $repository,
     ) {}
 
     /**
      * 一步换绑手机号（旧号 + 新号验证码一起验证）
      */
-    public function update(User $user, string $oldPhone, string $oldCode, string $newPhone, string $newCode): array
+    public function update(User $user, string $oldPhone, string $oldCode, string $newPhone, string $newCode): User
     {
         if (!$user->phone) {
             throwBusinessException('请先绑定手机号');
@@ -40,9 +40,9 @@ class PhoneService
 
         $user->phone = $newPhone;
         $user->phone_verified_at = now();
-        $user->save();
+        $this->repository->save($user);
 
-        return $user->userInfo();
+        return $user;
     }
 
     /**
@@ -69,7 +69,7 @@ class PhoneService
     /**
      * 两步换绑第二步：校验 verify_token + 新手机号验证码，换绑
      */
-    public function change(User $user, string $verifyToken, string $newPhone, string $newCode): array
+    public function change(User $user, string $verifyToken, string $newPhone, string $newCode): User
     {
         if (!$this->verifyToken->verify($verifyToken, 'change_phone_old', $user)) {
             throwBusinessException('验证已过期，请重新验证');
@@ -84,15 +84,15 @@ class PhoneService
 
         $user->phone = $newPhone;
         $user->phone_verified_at = now();
-        $user->save();
+        $this->repository->save($user);
 
-        return $user->userInfo();
+        return $user;
     }
 
     /**
      * 只验证新手机号一步换绑
      */
-    public function updateNew(User $user, string $newPhone, string $newCode): array
+    public function updateNew(User $user, string $newPhone, string $newCode): User
     {
         if (!Sms::make()->verifyCode($newPhone, $newCode)) {
             throwBusinessException('验证码错误或已过期');
@@ -103,9 +103,9 @@ class PhoneService
 
         $user->phone = $newPhone;
         $user->phone_verified_at = now();
-        $user->save();
+        $this->repository->save($user);
 
-        return $user->userInfo();
+        return $user;
     }
 
     /**

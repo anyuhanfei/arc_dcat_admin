@@ -2,6 +2,7 @@
 
 namespace App\Api\Repositories\Sys;
 
+use App\Enums\PublishStatus;
 use App\Models\Sys\SysNoticeReads;
 use App\Models\Sys\SysNotices;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -15,7 +16,7 @@ class NoticesRepository
     public function paginatePublished(int $perPage): LengthAwarePaginator
     {
         return SysNotices::select('id', 'title', 'image', 'created_at')
-            ->where('status', SysNotices::STATUS_PUBLISHED)
+            ->where('status', PublishStatus::PUBLISHED->value)
             ->orderBy('id', 'desc')
             ->paginate($perPage);
     }
@@ -26,7 +27,7 @@ class NoticesRepository
     public function findPublishedById(int $id): ?SysNotices
     {
         return SysNotices::where('id', $id)
-            ->where('status', SysNotices::STATUS_PUBLISHED)
+            ->where('status', PublishStatus::PUBLISHED->value)
             ->first();
     }
 
@@ -35,7 +36,7 @@ class NoticesRepository
      */
     public function latestPublished(): ?SysNotices
     {
-        return SysNotices::where('status', SysNotices::STATUS_PUBLISHED)
+        return SysNotices::where('status', PublishStatus::PUBLISHED->value)
             ->orderBy('id', 'desc')
             ->first();
     }
@@ -45,7 +46,7 @@ class NoticesRepository
      */
     public function latestUnreadPublished(int $userId): ?SysNotices
     {
-        return SysNotices::where('status', SysNotices::STATUS_PUBLISHED)
+        return SysNotices::where('status', PublishStatus::PUBLISHED->value)
             ->whereNotExists(function ($query) use ($userId) {
                 $query->select(DB::raw(1))
                     ->from('sys_notice_reads')
@@ -61,12 +62,9 @@ class NoticesRepository
      */
     public function markAsRead(int $noticeId, int $userId): void
     {
-        // 模型未定义 $fillable，需在 unguarded 状态下 firstOrCreate（模型不可改）
-        SysNoticeReads::unguarded(function () use ($noticeId, $userId) {
-            SysNoticeReads::firstOrCreate([
-                'notice_id' => $noticeId,
-                'user_id'   => $userId,
-            ]);
-        });
+        SysNoticeReads::firstOrCreate([
+            'notice_id' => $noticeId,
+            'user_id'   => $userId,
+        ]);
     }
 }

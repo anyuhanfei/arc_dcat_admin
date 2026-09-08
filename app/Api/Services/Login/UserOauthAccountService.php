@@ -46,7 +46,7 @@ class UserOauthAccountService
             // 已有 oauth 记录：session_key 非 null 时覆盖刷新（敏感凭据）
             if ($sessionKey !== null) {
                 $oauth->session_key = $sessionKey;
-                $oauth->save();
+                $this->repository->saveOauth($oauth);
             }
 
             $user = $oauth->user;
@@ -54,7 +54,7 @@ class UserOauthAccountService
             if (!$user) {
                 $user = $this->repository->createOauthUser($account, $nickname);
                 $oauth->user_id = $user->id;
-                $oauth->save();
+                $this->repository->saveOauth($oauth);
             }
         }
 
@@ -67,7 +67,7 @@ class UserOauthAccountService
 
         return [
             'token' => $token,
-            'user'  => $this->userInfo($user),
+            'user'  => $user,
         ];
     }
 
@@ -89,7 +89,7 @@ class UserOauthAccountService
         if ($target === null) {
             // 手机号未占用：绑定到当前用户
             $user->phone = $phone;
-            $user->save();
+            $this->repository->saveUser($user);
         } elseif ((int) $target->id !== (int) $user->id) {
             // 手机号被其他账号占用：合并（转移三方绑定 + 业务数据转移预留 + 软删除当前账号）
             DB::transaction(function () use ($user, $target) {
@@ -109,7 +109,7 @@ class UserOauthAccountService
 
         return [
             'token' => $token,
-            'user'  => $this->userInfo($user),
+            'user'  => $user,
         ];
     }
 
@@ -130,11 +130,4 @@ class UserOauthAccountService
         // TODO: 业务数据转移逻辑待真实项目补充
     }
 
-    /**
-     * 用户公开信息（统一委托 User::userInfo()）
-     */
-    protected function userInfo(User $user): array
-    {
-        return $user->userInfo();
-    }
 }

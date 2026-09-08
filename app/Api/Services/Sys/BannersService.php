@@ -3,8 +3,7 @@
 namespace App\Api\Services\Sys;
 
 use App\Api\Repositories\Sys\BannersRepository;
-use App\Models\Sys\SysBanners;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class BannersService
 {
@@ -22,16 +21,6 @@ class BannersService
     {
         $position = $position ?: (string) (array_key_first(config('business.banner.positions')) ?? '');
 
-        return $this->repository->selectByPosition($position)->map(function (SysBanners $item) {
-            return [
-                'id'             => $item->id,
-                'position'       => $item->position,
-                'position_name'  => config('business.banner.positions.'.$item->position.'.name.'.app()->getLocale(), $item->position),
-                'image'          => full_url($item->image),
-                'link_type'      => $item->link_type,
-                'link_type_name' => config('business.banner.link_types.'.$item->link_type.'.name.'.app()->getLocale(), $item->link_type),
-                'link_value'     => $item->link_value,
-            ];
-        });
+        return $this->repository->selectByPosition($position);
     }
 }

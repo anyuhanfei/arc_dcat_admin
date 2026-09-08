@@ -3,6 +3,7 @@
 namespace App\Api\Controllers\Sys;
 
 use App\Api\Requests\Sys\BannersListRequest;
+use App\Api\Resources\Sys\BannersResource;
 use App\Api\Services\Sys\BannersService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -61,6 +62,6 @@ class BannersController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->list($request->input('position'));
 
-        return success('success', $result);
+        return success('success', BannersResource::collection($result)->toArray($request));
     }
 }

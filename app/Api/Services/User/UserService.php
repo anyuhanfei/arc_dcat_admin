@@ -2,22 +2,29 @@
 
 namespace App\Api\Services\User;
 
+use App\Api\Repositories\User\UserRepository;
 use App\Models\User;
 
 class UserService
 {
+    public function __construct(
+        protected UserRepository $repository,
+    ) {}
+
     /**
-     * 用户公开信息（统一委托 User::userInfo()）
+     * 用户公开信息
      */
-    public function info(User $user): array
+    public function info(User $user): User
     {
-        return $user->userInfo();
+        return $user;
     }
 
     /**
      * 修改用户资料（只更新提交的字段，null 不处理）
+     *
+     * @throws \App\Exceptions\BusinessException
      */
-    public function update(User $user, array $params): array
+    public function update(User $user, array $params): User
     {
         $data = array_filter($params, fn ($v) => $v !== null);
 
@@ -25,9 +32,10 @@ class UserService
             throwBusinessException('请至少提交一个要修改的字段');
         }
 
-        $user->fill($data)->save();
+        $user->fill($data);
+        $this->repository->save($user);
 
-        return $user->userInfo();
+        return $user;
     }
 
     /**
@@ -43,6 +51,6 @@ class UserService
      */
     public function cancel(User $user): void
     {
-        $user->delete();
+        $this->repository->delete($user);
     }
 }

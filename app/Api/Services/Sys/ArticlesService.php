@@ -3,9 +3,9 @@
 namespace App\Api\Services\Sys;
 
 use App\Api\Repositories\Sys\ArticlesRepository;
-use App\Models\Sys\SysArticleCategories;
 use App\Models\Sys\SysArticles;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ArticlesService
 {
@@ -18,13 +18,7 @@ class ArticlesService
      */
     public function categories(): Collection
     {
-        return $this->repository->selectCategories()->map(function (SysArticleCategories $item) {
-            return [
-                'id'    => $item->id,
-                'name'  => $item->name,
-                'image' => full_url($item->image),
-            ];
-        });
+        return $this->repository->selectCategories();
     }
 
     /**
@@ -32,27 +26,17 @@ class ArticlesService
      *
      * @param int|null $categoryId 分类ID，为空时返回全部分类
      */
-    public function index(?int $categoryId, int $perPage): array
+    public function index(?int $categoryId, int $perPage): LengthAwarePaginator
     {
-        $paginator = $this->repository->paginate($categoryId, $perPage);
-
-        return format_paginated_datas($paginator, ['*'], function (SysArticles $item) {
-            return [
-                'id'            => $item->id,
-                'category_id'   => $item->category_id,
-                'category_name' => $item->category->name ?? '',
-                'title'         => $item->title,
-                'image'         => full_url($item->image),
-                'author'        => $item->author,
-                'published_at'  => $item->created_at->format('Y-m-d H:i:s'),
-            ];
-        });
+        return $this->repository->paginate($categoryId, $perPage);
     }
 
     /**
      * 获取文章详情（仅发布状态，不存在或未发布时提示已下架）
+     *
+     * @throws \App\Exceptions\BusinessException
      */
-    public function show(int $id): array
+    public function show(int $id): SysArticles
     {
         $item = $this->repository->findPublishedById($id);
 
@@ -60,17 +44,6 @@ class ArticlesService
             throwBusinessException('文章已下架');
         }
 
-        return [
-            'id'            => $item->id,
-            'category_id'   => $item->category_id,
-            'category_name' => $item->category->name ?? '',
-            'title'         => $item->title,
-            'image'         => full_url($item->image),
-            'author'        => $item->author,
-            'published_at'  => $item->created_at->format('Y-m-d H:i:s'),
-            'summary'       => $item->summary,
-            'keywords'      => $item->keywords ? array_values(array_filter(array_map('trim', explode(',', $item->keywords)))) : [],
-            'content'       => $item->content,
-        ];
+        return $item;
     }
 }

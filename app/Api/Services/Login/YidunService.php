@@ -37,15 +37,8 @@ class YidunService
 
         return [
             'token' => $token,
-            'user'  => $this->userInfo($user),
+            'user'  => $user,
         ];
     }
 
-    /**
-     * 用户公开信息（统一委托 User::userInfo()）
-     */
-    protected function userInfo(User $user): array
-    {
-        return $user->userInfo();
-    }
 }

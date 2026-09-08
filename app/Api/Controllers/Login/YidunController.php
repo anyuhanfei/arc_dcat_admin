@@ -4,6 +4,7 @@ namespace App\Api\Controllers\Login;
 
 use App\Api\Requests\Login\YidunLoginRequest;
 use App\Api\Services\Login\YidunService;
+use App\Api\Resources\Login\LoginResource;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -57,6 +58,6 @@ class YidunController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->login($request->input('token'), $request->input('access_token'));
 
-        return success('登录成功', $result);
+        return success('登录成功', (new LoginResource($result))->toArray($request));
     }
 }

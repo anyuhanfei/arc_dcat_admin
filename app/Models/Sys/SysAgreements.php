@@ -12,5 +12,11 @@ class SysAgreements extends Model
     use SoftDeletes;
 
     protected $table = 'sys_agreements';
-    
+
+    protected $fillable = ['title', 'content'];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }

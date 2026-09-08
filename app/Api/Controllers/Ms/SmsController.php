@@ -3,6 +3,7 @@
 namespace App\Api\Controllers\Ms;
 
 use App\Api\Requests\Ms\SmsSendRequest;
+use App\Api\Resources\Ms\SmsResource;
 use App\Api\Services\Ms\SmsService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -54,6 +55,6 @@ class SmsController extends \Illuminate\Routing\Controller
 
         $result = $this->service->send($phone, $user);
 
-        return success('验证码发送成功', $result);
+        return success('验证码发送成功', (new SmsResource($result))->toArray($request));
     }
 }

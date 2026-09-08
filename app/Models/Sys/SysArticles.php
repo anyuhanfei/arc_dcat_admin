@@ -2,6 +2,7 @@
 
 namespace App\Models\Sys;
 
+use App\Enums\PublishStatus;
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,12 +13,12 @@ class SysArticles extends Model
 
     protected $table = 'sys_articles';
 
-    // 文章状态枚举（后台展示用语言文件，此处为 fallback）
-    public const STATUS_DRAFT = 0;
-    public const STATUS_PUBLISHED = 1;
-    public const STATUS_MAP = [
-        self::STATUS_DRAFT => '草稿',
-        self::STATUS_PUBLISHED => '发布',
+    protected $fillable = ['category_id', 'title', 'author', 'image', 'summary', 'keywords', 'content', 'status'];
+
+    protected $casts = [
+        'status' => PublishStatus::class,
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
@@ -27,5 +28,4 @@ class SysArticles extends Model
     {
         return $this->belongsTo(SysArticleCategories::class, 'category_id');
     }
-    
 }

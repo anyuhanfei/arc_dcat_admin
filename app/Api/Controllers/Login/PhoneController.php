@@ -4,6 +4,7 @@ namespace App\Api\Controllers\Login;
 
 use App\Api\Requests\Login\PhoneLoginRequest;
 use App\Api\Services\Login\PhoneService;
+use App\Api\Resources\Login\LoginResource;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -60,6 +61,6 @@ class PhoneController extends \Illuminate\Routing\Controller
 
         $result = $this->service->login($phone, $code);
 
-        return success('登录成功', $result);
+        return success('登录成功', (new LoginResource($result))->toArray($request));
     }
 }

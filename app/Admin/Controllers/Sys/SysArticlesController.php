@@ -32,7 +32,9 @@ class SysArticlesController extends AdminController
             $grid->column('image', admin_trans_field('image'))->display(function ($v) {
                 return $v ? '<img src="'.e(full_url($v)).'" style="height:40px;border-radius:4px;">' : '';
             });
-            $grid->column('status', admin_trans_field('status'))->using(__('sys-articles.enums.status'))->label([0 => 'default', 1 => 'success']);
+            $grid->column('status', admin_trans_field('status'))->display(function ($v) {
+                return $v instanceof \App\Enums\PublishStatus ? $v->value : $v;
+            })->using(__('sys-articles.enums.status'))->label([0 => 'default', 1 => 'success']);
             $grid->column('updated_at', admin_trans_field('updated_at'))->sortable();
         
             $grid->tools(function (Grid\Tools $tools) {
@@ -77,7 +79,9 @@ class SysArticlesController extends AdminController
             $show->field('summary', admin_trans_field('summary'));
             $show->field('keywords', admin_trans_field('keywords'));
             $show->field('content', admin_trans_field('content'))->unescape();
-            $show->field('status', admin_trans_field('status'))->using(__('sys-articles.enums.status'));
+            $show->field('status', admin_trans_field('status'))->display(function ($v) {
+                return $v instanceof \App\Enums\PublishStatus ? $v->value : $v;
+            })->using(__('sys-articles.enums.status'));
             $show->field('created_at', admin_trans_field('created_at'));
             $show->field('updated_at', admin_trans_field('updated_at'));
         });

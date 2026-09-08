@@ -2,6 +2,7 @@
 
 namespace App\Api\Services\User;
 
+use App\Api\Repositories\User\UserRepository;
 use App\Integrations\Sms\Sms;
 use App\Models\User;
 
@@ -9,6 +10,7 @@ class PasswordPhoneService
 {
     public function __construct(
         protected VerifyTokenService $verifyToken,
+        protected UserRepository $repository,
     ) {}
 
     /**
@@ -29,7 +31,7 @@ class PasswordPhoneService
         Sms::make()->destroyCode($phone);
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
     }
 
     /**
@@ -62,6 +64,6 @@ class PasswordPhoneService
         }
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
     }
 }

@@ -15,6 +15,8 @@ class PasswordService
 
     /**
      * 登录
+     *
+     * @return array{token: string, user: User}
      */
     public function login(string $account, string $password): array
     {
@@ -33,14 +35,14 @@ class PasswordService
 
         return [
             'token' => $token,
-            'user'  => $this->userInfo($user),
+            'user'  => $user,
         ];
     }
 
     /**
      * 手机号注册（账号密码 + 手机验证码）
      */
-    public function registerByPhone(string $account, string $password, string $phone, string $code): array
+    public function registerByPhone(string $account, string $password, string $phone, string $code): User
     {
         if ($this->repository->findByPhone($phone)) {
             throwBusinessException('该手机号已注册');
@@ -64,13 +66,13 @@ class PasswordService
         // 注册成功，销毁验证码缓存防止重放
         Sms::make()->destroyCode($phone);
 
-        return $this->userInfo($user);
+        return $user;
     }
 
     /**
      * 邮箱注册（账号密码 + 邮箱验证码）
      */
-    public function registerByEmail(string $account, string $password, string $email, string $code): array
+    public function registerByEmail(string $account, string $password, string $email, string $code): User
     {
         if ($this->repository->findByEmail($email)) {
             throwBusinessException('该邮箱已注册');
@@ -94,14 +96,6 @@ class PasswordService
         // 注册成功，销毁验证码缓存防止重放
         (new \App\Integrations\Email\Email)->destroyCode($email);
 
-        return $this->userInfo($user);
-    }
-
-    /**
-     * 用户公开信息（统一委托 User::userInfo()）
-     */
-    protected function userInfo(User $user): array
-    {
-        return $user->userInfo();
+        return $user;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Api\Controllers\Sys;
 
 use App\Api\Requests\Sys\NoticesIndexRequest;
 use App\Api\Requests\Sys\NoticesShowRequest;
+use App\Api\Resources\Sys\NoticesResource;
 use App\Api\Services\Sys\NoticesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -65,9 +66,20 @@ class NoticesController extends \Illuminate\Routing\Controller
     ]
     public function index(NoticesIndexRequest $request): JsonResponse
     {
-        $result = $this->service->index($request->integer('per_page', 15));
+        $paginator = $this->service->index($request->integer('per_page', 15));
 
-        return success('success', $result);
+        $data = [
+            'total'       => $paginator->total(),
+            'count'       => $paginator->count(),
+            'perPage'     => $paginator->perPage(),
+            'currentPage' => $paginator->currentPage(),
+            'lastPage'    => $paginator->lastPage(),
+            'firstItem'   => $paginator->firstItem(),
+            'lastItem'    => $paginator->lastItem(),
+            'datas'       => NoticesResource::collection($paginator->getCollection())->toArray($request),
+        ];
+
+        return success('success', $data);
     }
 
     #[
@@ -111,7 +123,7 @@ class NoticesController extends \Illuminate\Routing\Controller
         $user = auth('sanctum')->user();
         $result = $this->service->show($request->input('id'), $user);
 
-        return success('success', $result);
+        return success('success', (new NoticesResource($result))->toArray($request));
     }
 
     #[
@@ -147,6 +159,10 @@ class NoticesController extends \Illuminate\Routing\Controller
         $user = auth('sanctum')->user();
         $result = $this->service->latest($user);
 
-        return success('success', $result);
+        if ($result === null) {
+            return success('success', null);
+        }
+
+        return success('success', (new NoticesResource($result))->toArray($request));
     }
 }

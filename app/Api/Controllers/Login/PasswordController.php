@@ -7,6 +7,8 @@ use App\Api\Requests\Login\ForgotPasswordPhoneRequest;
 use App\Api\Requests\Login\PasswordLoginRequest;
 use App\Api\Requests\Login\PasswordRegisterByEmailRequest;
 use App\Api\Requests\Login\PasswordRegisterByPhoneRequest;
+use App\Api\Resources\Login\LoginResource;
+use App\Api\Resources\User\UserResource;
 use App\Api\Services\Login\ForgotPasswordService;
 use App\Api\Services\Login\PasswordService;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +67,7 @@ class PasswordController extends \Illuminate\Routing\Controller
 
         $result = $this->service->login($params['account'], $params['password']);
 
-        return success('登录成功', $result);
+        return success('登录成功', (new LoginResource($result))->toArray($request));
     }
 
     #[
@@ -110,9 +112,9 @@ class PasswordController extends \Illuminate\Routing\Controller
     {
         $params = $request->input();
 
-        $userInfo = $this->service->registerByPhone($params['account'], $params['password'], $params['phone'], $params['code']);
+        $result = $this->service->registerByPhone($params['account'], $params['password'], $params['phone'], $params['code']);
 
-        return success('注册成功', $userInfo);
+        return success('注册成功', (new UserResource($result))->toArray($request));
     }
 
     #[
@@ -157,9 +159,9 @@ class PasswordController extends \Illuminate\Routing\Controller
     {
         $params = $request->input();
 
-        $userInfo = $this->service->registerByEmail($params['account'], $params['password'], $params['email'], $params['code']);
+        $result = $this->service->registerByEmail($params['account'], $params['password'], $params['email'], $params['code']);
 
-        return success('注册成功', $userInfo);
+        return success('注册成功', (new UserResource($result))->toArray($request));
     }
 
     #[

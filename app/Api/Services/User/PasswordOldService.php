@@ -2,6 +2,7 @@
 
 namespace App\Api\Services\User;
 
+use App\Api\Repositories\User\UserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -9,6 +10,7 @@ class PasswordOldService
 {
     public function __construct(
         protected VerifyTokenService $verifyToken,
+        protected UserRepository $repository,
     ) {}
 
     /**
@@ -21,7 +23,7 @@ class PasswordOldService
         }
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
     }
 
     /**
@@ -46,6 +48,6 @@ class PasswordOldService
         }
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
     }
 }

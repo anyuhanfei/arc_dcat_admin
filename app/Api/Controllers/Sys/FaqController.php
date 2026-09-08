@@ -4,6 +4,8 @@ namespace App\Api\Controllers\Sys;
 
 use App\Api\Requests\Sys\FaqCategoriesRequest;
 use App\Api\Requests\Sys\FaqQuestionsRequest;
+use App\Api\Resources\Sys\FaqCategoriesResource;
+use App\Api\Resources\Sys\FaqQuestionsResource;
 use App\Api\Services\Sys\FaqService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -44,7 +46,7 @@ class FaqController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->categories();
 
-        return success('success', $result);
+        return success('success', FaqCategoriesResource::collection($result)->toArray($request));
     }
 
     #[
@@ -99,11 +101,22 @@ class FaqController extends \Illuminate\Routing\Controller
     ]
     public function questions(FaqQuestionsRequest $request): JsonResponse
     {
-        $result = $this->service->questions(
+        $paginator = $this->service->questions(
             $request->input('category_id'),
             $request->integer('per_page', 15),
         );
 
-        return success('success', $result);
+        $data = [
+            'total'       => $paginator->total(),
+            'count'       => $paginator->count(),
+            'perPage'     => $paginator->perPage(),
+            'currentPage' => $paginator->currentPage(),
+            'lastPage'    => $paginator->lastPage(),
+            'firstItem'   => $paginator->firstItem(),
+            'lastItem'    => $paginator->lastItem(),
+            'datas'       => FaqQuestionsResource::collection($paginator->getCollection())->toArray($request),
+        ];
+
+        return success('success', $data);
     }
 }

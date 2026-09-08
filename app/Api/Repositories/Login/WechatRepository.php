@@ -75,4 +75,20 @@ class WechatRepository
     {
         User::where('id', $userId)->delete();
     }
+
+    /**
+     * 保存三方绑定记录（新增/更新）
+     */
+    public function saveOauth(UserOauth $oauth): bool
+    {
+        return $oauth->save();
+    }
+
+    /**
+     * 保存用户（新增/更新）
+     */
+    public function saveUser(User $user): bool
+    {
+        return $user->save();
+    }
 }

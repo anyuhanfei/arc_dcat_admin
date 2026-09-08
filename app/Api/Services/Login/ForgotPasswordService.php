@@ -29,7 +29,7 @@ class ForgotPasswordService
         Sms::make()->destroyCode($phone);
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
 
         // 安全：重置密码后让该用户已登录的 token 全部失效
         $user->tokens()->delete();
@@ -52,7 +52,7 @@ class ForgotPasswordService
         (new Email)->destroyCode($email);
 
         $user->password = $newPassword;
-        $user->save();
+        $this->repository->save($user);
 
         // 安全：重置密码后让该用户已登录的 token 全部失效
         $user->tokens()->delete();

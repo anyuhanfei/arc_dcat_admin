@@ -14,13 +14,22 @@ class Users extends Model
     /** 与 API 的 App\Models\User 一致：主键非自增（id 由应用层生成），避免 INSERT 后被 lastInsertId 覆盖 */
     public $incrementing = false;
 
+    protected $fillable = ['id', 'account', 'phone', 'email', 'password', 'nickname', 'avatar', 'signature', 'gender', 'birthday', 'status', 'phone_verified_at', 'email_verified_at'];
+
+    protected $hidden = ['password', 'remember_token'];
+
     /**
      * 与 API 的 App\Models\User 保持一致：密码自动 bcrypt 加密（后台创建的用户可直接登录）
      */
     protected function casts(): array
     {
         return [
+            'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'gender' => 'integer',
+            'status' => 'integer',
+            'birthday' => 'date',
         ];
     }
 

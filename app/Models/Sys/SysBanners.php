@@ -14,16 +14,18 @@ class SysBanners extends Model implements Sortable
 
     protected $table = 'sys_banners';
 
+    protected $fillable = ['position', 'image', 'link_type', 'link_value', 'sort', 'is_show'];
+
+    protected $casts = [
+        'is_show' => 'boolean',
+        'sort' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     // 拖拽排序：新建时自动分配排序值，无需手动输入
     public $sortable = [
         'order_column_name' => 'sort',
         'sort_when_creating' => true,
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'is_show' => 'boolean',
-        ];
-    }
 }

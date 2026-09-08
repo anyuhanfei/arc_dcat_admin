@@ -3,6 +3,7 @@
 namespace App\Api\Controllers\User;
 
 use App\Api\Requests\User\UserUpdateRequest;
+use App\Api\Resources\User\UserResource;
 use App\Api\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -46,9 +47,9 @@ class UserController extends \Illuminate\Routing\Controller
     {
         $user = $request->user();
 
-        $userInfo = $this->service->info($user);
+        $result = $this->service->info($user);
 
-        return success('success', $userInfo);
+        return success('success', (new UserResource($result))->toArray($request));
     }
 
     #[
@@ -92,9 +93,9 @@ class UserController extends \Illuminate\Routing\Controller
     {
         $params = $request->only(['avatar', 'nickname', 'signature', 'gender', 'birthday']);
 
-        $userInfo = $this->service->update($request->user(), $params);
+        $result = $this->service->update($request->user(), $params);
 
-        return success('修改成功', $userInfo);
+        return success('修改成功', (new UserResource($result))->toArray($request));
     }
 
     #[

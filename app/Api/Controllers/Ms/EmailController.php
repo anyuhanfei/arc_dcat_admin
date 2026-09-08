@@ -3,6 +3,7 @@
 namespace App\Api\Controllers\Ms;
 
 use App\Api\Requests\Ms\EmailSendRequest;
+use App\Api\Resources\Ms\EmailResource;
 use App\Api\Services\Ms\EmailService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -53,6 +54,6 @@ class EmailController extends \Illuminate\Routing\Controller
 
         $result = $this->service->send($email, $user);
 
-        return success('验证码已发送', $result);
+        return success('验证码已发送', (new EmailResource($result))->toArray($request));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Api\Services\Sys;
 
 use App\Api\Repositories\Sys\AgreementsRepository;
+use App\Models\Sys\SysAgreements;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -25,18 +26,12 @@ class AgreementsService
      *
      * @throws \App\Exceptions\BusinessException
      */
-    public function detail(int $id): array
+    public function detail(int $id): SysAgreements
     {
         try {
-            $agreement = $this->repository->findById($id);
+            return $this->repository->findById($id);
         } catch (ModelNotFoundException) {
             throwBusinessException('协议不存在');
         }
-
-        return [
-            'id'      => $agreement->id,
-            'title'   => $agreement->title,
-            'content' => $agreement->content,
-        ];
     }
 }

@@ -6,6 +6,7 @@ use App\Api\Requests\User\PhoneChangeRequest;
 use App\Api\Requests\User\PhoneUpdateNewRequest;
 use App\Api\Requests\User\PhoneUpdateRequest;
 use App\Api\Requests\User\PhoneVerifyOldRequest;
+use App\Api\Resources\User\UserResource;
 use App\Api\Services\User\PhoneService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -51,9 +52,9 @@ class PhoneController extends \Illuminate\Routing\Controller
     {
         $user = $request->user();
 
-        $userInfo = $this->service->update($user, $request->input('old_phone'), $request->input('old_code'), $request->input('new_phone'), $request->input('new_code'));
+        $result = $this->service->update($user, $request->input('old_phone'), $request->input('old_code'), $request->input('new_phone'), $request->input('new_code'));
 
-        return success('手机号修改成功', $userInfo);
+        return success('手机号修改成功', (new UserResource($result))->toArray($request));
     }
 
     #[
@@ -132,9 +133,9 @@ class PhoneController extends \Illuminate\Routing\Controller
     {
         $user = $request->user();
 
-        $userInfo = $this->service->change($user, $request->input('verify_token'), $request->input('new_phone'), $request->input('new_code'));
+        $result = $this->service->change($user, $request->input('verify_token'), $request->input('new_phone'), $request->input('new_code'));
 
-        return success('手机号修改成功', $userInfo);
+        return success('手机号修改成功', (new UserResource($result))->toArray($request));
     }
 
     #[
@@ -170,8 +171,8 @@ class PhoneController extends \Illuminate\Routing\Controller
     {
         $user = $request->user();
 
-        $userInfo = $this->service->updateNew($user, $request->input('new_phone'), $request->input('new_code'));
+        $result = $this->service->updateNew($user, $request->input('new_phone'), $request->input('new_code'));
 
-        return success('手机号修改成功', $userInfo);
+        return success('手机号修改成功', (new UserResource($result))->toArray($request));
     }
 }

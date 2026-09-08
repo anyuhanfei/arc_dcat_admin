@@ -4,6 +4,7 @@ namespace App\Api\Controllers\Sys;
 
 use App\Api\Requests\Sys\AgreementsIndexRequest;
 use App\Api\Requests\Sys\AgreementsShowRequest;
+use App\Api\Resources\Sys\AgreementsResource;
 use App\Api\Services\Sys\AgreementsService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -63,7 +64,7 @@ class AgreementsController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->list();
 
-        return success('success', $result);
+        return success('success', AgreementsResource::collection($result)->toArray($request));
     }
 
     #[
@@ -104,6 +105,6 @@ class AgreementsController extends \Illuminate\Routing\Controller
     {
         $result = $this->service->detail($request->input('id'));
 
-        return success('success', $result);
+        return success('success', (new AgreementsResource($result))->toArray($request));
     }
 }

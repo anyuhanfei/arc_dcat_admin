@@ -21,7 +21,9 @@ class SysNoticesController extends AdminController
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('title', admin_trans_field('title'));
             $grid->column('image', admin_trans_field('image'))->display(fn ($v) => $v ? '<img src="'.e(full_url($v)).'" style="height:40px;border-radius:4px;">' : '');
-            $grid->column('status', admin_trans_field('status'))->using(__('sys-notices.enums.status'))->label([0 => 'default', 1 => 'success']);
+            $grid->column('status', admin_trans_field('status'))->display(function ($v) {
+                return $v instanceof \App\Enums\PublishStatus ? $v->value : $v;
+            })->using(__('sys-notices.enums.status'))->label([0 => 'default', 1 => 'success']);
             $grid->column('updated_at', admin_trans_field('updated_at'))->sortable();
 
             // 行内操作：已读用户弹框（OpenFrameAction 通用行内弹框；prepend 放「查看」前）
@@ -56,7 +58,9 @@ class SysNoticesController extends AdminController
             $show->field('title', admin_trans_field('title'));
             $show->field('image', admin_trans_field('image'))->image();
             $show->field('content', admin_trans_field('content'))->unescape();
-            $show->field('status', admin_trans_field('status'))->using(__('sys-notices.enums.status'));
+            $show->field('status', admin_trans_field('status'))->display(function ($v) {
+                return $v instanceof \App\Enums\PublishStatus ? $v->value : $v;
+            })->using(__('sys-notices.enums.status'));
             $show->field('created_at', admin_trans_field('created_at'));
             $show->field('updated_at', admin_trans_field('updated_at'));
         });

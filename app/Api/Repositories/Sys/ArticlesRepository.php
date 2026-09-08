@@ -2,6 +2,7 @@
 
 namespace App\Api\Repositories\Sys;
 
+use App\Enums\PublishStatus;
 use App\Models\Sys\SysArticleCategories;
 use App\Models\Sys\SysArticles;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,7 +29,7 @@ class ArticlesRepository
     {
         $query = SysArticles::select('id', 'category_id', 'title', 'image', 'author', 'created_at')
             ->with('category:id,name')
-            ->where('status', SysArticles::STATUS_PUBLISHED)
+            ->where('status', PublishStatus::PUBLISHED->value)
             ->orderBy('id', 'desc');
 
         if ($categoryId !== null) {
@@ -45,7 +46,7 @@ class ArticlesRepository
     {
         return SysArticles::with('category:id,name')
             ->where('id', $id)
-            ->where('status', SysArticles::STATUS_PUBLISHED)
+            ->where('status', PublishStatus::PUBLISHED->value)
             ->first();
     }
 }

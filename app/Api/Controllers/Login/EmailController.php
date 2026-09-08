@@ -4,6 +4,7 @@ namespace App\Api\Controllers\Login;
 
 use App\Api\Requests\Login\EmailLoginRequest;
 use App\Api\Services\Login\EmailService;
+use App\Api\Resources\Login\LoginResource;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -60,6 +61,6 @@ class EmailController extends \Illuminate\Routing\Controller
 
         $result = $this->service->login($email, $code);
 
-        return success('登录成功', $result);
+        return success('登录成功', (new LoginResource($result))->toArray($request));
     }
 }

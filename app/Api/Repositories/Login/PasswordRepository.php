@@ -66,4 +66,12 @@ class PasswordRepository
     {
         return User::where('account', $account)->first();
     }
+
+    /**
+     * 保存用户（新增/更新）
+     */
+    public function save(User $user): bool
+    {
+        return $user->save();
+    }
 }
