@@ -13,8 +13,8 @@ class LoginResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'token' => $this->token,
-            'user'  => (new UserResource($this->user))->toArray($request),
+            'token' => $this->resource['token'] ?? null,
+            'user'  => (new UserResource($this->resource['user'] ?? null))->toArray($request),
         ];
     }
 }

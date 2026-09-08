@@ -51,6 +51,10 @@ Route::post('email/send', [\App\Api\Controllers\Ms\EmailController::class, 'send
 
 // 需登录接口
 Route::middleware('auth:sanctum')->group(function () {
+    // 意见反馈相关（需登录）
+    Route::post('feedback/submit', [\App\Api\Controllers\Feedback\FeedbackController::class, 'submit']);
+    Route::post('feedback/list', [\App\Api\Controllers\Feedback\FeedbackController::class, 'list']);
+    Route::post('feedback/detail', [\App\Api\Controllers\Feedback\FeedbackController::class, 'detail']);
     Route::post('user/info', [\App\Api\Controllers\User\UserController::class, 'info']);
     Route::post('user/update', [\App\Api\Controllers\User\UserController::class, 'update']);
     Route::post('user/logout', [\App\Api\Controllers\User\UserController::class, 'logout']);

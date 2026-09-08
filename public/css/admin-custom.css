@@ -1,0 +1,12 @@
+/* 表单 display 只读字段：淡灰色背景，表明不可输入 */
+.form-group .box.box-solid.box-default {
+    background-color: #f4f4f4 !important;
+    border-color: #e0e0e0 !important;
+}
+.form-group .box.box-solid.box-default .box-body {
+    background-color: #f4f4f4 !important;
+    color: #555 !important;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+}

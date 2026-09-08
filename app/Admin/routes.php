@@ -40,6 +40,8 @@ Route::group([
     $router->get('sys/configs/{id}/fill-value', [\App\Admin\Controllers\Sys\SysConfigsController::class, 'fillValue']);
     $router->put('sys/configs/{id}/fill-value', [\App\Admin\Controllers\Sys\SysConfigsController::class, 'saveFillValue']);
 
+    $router->resource('feedback', \App\Admin\Controllers\Feedback\FeedbackController::class);
+
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
     $router->get('user/user-wallet-records', \App\Admin\Controllers\User\UserWalletRecordsController::class.'@index');
 
