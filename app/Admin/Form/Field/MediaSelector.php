@@ -36,7 +36,10 @@ class MediaSelector extends Field
         $value = $this->value();
         // 已有值时用 full_url 拼完整地址做预览
         $previewUrl = $value ? full_url($value) : '';
-        $previewHidden = $value ? '' : ' style="display:none"';
+        $hasValue = (bool) $value;
+        $previewStyle = $hasValue ? '' : ' style="display:none"';
+        $placeholderStyle = $hasValue ? ' style="display:none"' : '';
+        $noImageText = e(__('media-selector.no_image'));
 
         $label = e($this->label);
         $attributes = $this->formatAttributes();
@@ -48,16 +51,22 @@ class MediaSelector extends Field
     </div>
     <div class="{$viewClass['field']}">
         <div class="help-block with-errors"></div>
-        <div class="input-group">
-            <span class="input-group-prepend">
-                <img src="{$previewUrl}" class="media-selector-preview"{$previewHidden}>
-            </span>
-            <input {$attributes}>
-            <span class="input-group-append">
-                <button type="button" class="btn btn-primary media-selector-open">
-                    <i class="feather icon-image"></i>&nbsp;<?= e(__('media-selector.select_button')) ?>
-                </button>
-            </span>
+        <div class="media-selector-card">
+            <div class="media-selector-preview-wrap">
+                <img src="{$previewUrl}" class="media-selector-preview"{$previewStyle}>
+                <div class="media-selector-placeholder"{$placeholderStyle}>
+                    <i class="feather icon-image"></i>
+                    <span>{$noImageText}</span>
+                </div>
+            </div>
+            <div class="input-group media-selector-input-group">
+                <input {$attributes}>
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-primary media-selector-open">
+                        <i class="feather icon-image"></i>&nbsp;<?= e(__('media-selector.select_button')) ?>
+                    </button>
+                </span>
+            </div>
         </div>
     </div>
 </div>
@@ -65,19 +74,26 @@ HTML;
     }
 
     /**
-     * 字段样式（缩略图与选择弹窗网格）.
+     * 字段样式（预览卡片与选择弹窗网格）.
      */
     protected function style()
     {
         return <<<'CSS'
 @keyframes ms-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.media-selector-preview{height:34px;max-width:60px;border-radius:4px;object-fit:cover;background:#f4f6f8;vertical-align:middle;}
-.media-selector-upload{padding:12px 15px;border-bottom:1px solid #e5e7eb;background:#fafbfc;flex-shrink:0;}
-.media-selector-list{display:flex;flex-wrap:wrap;align-content:flex-start;gap:12px;}
+.media-selector-card{margin-bottom:8px;}
+.media-selector-preview-wrap{width:160px;height:160px;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;background:#f4f6f8;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.media-selector-preview{width:100%;height:100%;object-fit:cover;display:block;}
+.media-selector-placeholder{color:#bbb;font-size:13px;text-align:center;line-height:1.4;}
+.media-selector-placeholder i{font-size:28px;display:block;margin-bottom:4px;}
+.media-selector-input-group{width:160px;}
+.media-selector-upload{padding:12px 15px;border-bottom:1px solid #e5e7eb;background:#fafbfc;flex-shrink:0;display:flex;align-items:center;}
+.media-selector-drag-hint{margin-left:12px;color:#999;font-size:12px;}
+.media-selector-list{display:flex;flex-wrap:wrap;align-content:flex-start;gap:12px;padding:12px;}
 .media-selector-list .media-selector-item{width:110px;border:1px solid #e5e7eb;border-radius:6px;padding:6px;cursor:pointer;text-align:center;background:#fff;transition:box-shadow .2s;}
 .media-selector-list .media-selector-item:hover{border-color:#5b8ff9;box-shadow:0 2px 8px rgba(91,143,249,.25);}
 .media-selector-list .media-selector-item img{width:96px;height:72px;object-fit:cover;border-radius:4px;display:block;margin:0 auto 4px;background:#f4f6f8;}
 .media-selector-list .media-selector-item span{font-size:12px;color:#555;word-break:break-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.media-selector-modal.ms-drag-over{box-shadow:inset 0 0 0 3px #5b8ff9;background:rgba(91,143,249,.05);}
 CSS;
     }
 
@@ -93,7 +109,7 @@ CSS;
     var MS_TEXT = %s3;
 
     // 渲染单个媒体项（列表加载与上传共用），prepend=true 时插入列表顶部
-    function renderItem(item, $box, $input, $preview, layerIndex, prepend) {
+    function renderItem(item, $box, $input, $preview, $placeholder, layerIndex, prepend) {
         var $item = $('<div class="media-selector-item"></div>');
         $('<img>').attr('src', item.url).attr('loading', 'lazy').appendTo($item);
         $('<span>').text(item.name).appendTo($item);
@@ -101,6 +117,7 @@ CSS;
             $input.val(item.path).trigger('change');
             if (item.url) {
                 $preview.attr('src', item.url).show();
+                $placeholder.hide();
             }
             layer.close(layerIndex);
         });
@@ -111,28 +128,77 @@ CSS;
         }
     }
 
+    // 批量上传（点击按钮选择 / 拖拽进入弹窗共用）
+    function uploadFiles(files, $uploadBtn, $box, $input, $preview, $placeholder, layerIndex) {
+        if (!files || !files.length) {
+            return;
+        }
+
+        var originalHtml = $uploadBtn.html();
+        $uploadBtn.prop('disabled', true).html('<i class="feather icon-loader" style="display:inline-block;animation:ms-spin 1.2s linear infinite;"></i>&nbsp;' + MS_TEXT.uploading);
+
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            formData.append('file[]', files[i]);
+        }
+
+        $.ajax({
+            url: MEDIA_UPLOAD_URL,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (res) {
+                $uploadBtn.prop('disabled', false).html(originalHtml);
+
+                if (!res || res.code !== 0) {
+                    Dcat.error((res && res.message) || MS_TEXT.upload_failed);
+                    return;
+                }
+
+                var items = res.data || [];
+                Dcat.success(MS_TEXT.upload_success + (items.length > 1 ? ' (' + items.length + ')' : ''));
+                // 新图片插入列表顶部；若当前是空态提示则先清空
+                if ($box.children('.text-center').length) {
+                    $box.empty();
+                }
+                items.forEach(function (item) {
+                    renderItem(item, $box, $input, $preview, $placeholder, layerIndex, true);
+                });
+            },
+            error: function () {
+                $uploadBtn.prop('disabled', false).html(originalHtml);
+                Dcat.error(MS_TEXT.upload_failed);
+            }
+        });
+    }
+
     $(document).off('click.dcat-media-selector').on('click.dcat-media-selector', '.media-selector-open', function () {
-            var $group = $(this).closest('.input-group');
-            var $input = $group.find('input');
-            var $preview = $group.find('.media-selector-preview');
+            var $card = $(this).closest('.media-selector-card');
+            var $input = $card.find('input');
+            var $preview = $card.find('.media-selector-preview');
+            var $placeholder = $card.find('.media-selector-placeholder');
 
             var layerIndex = layer.open({
                 type: 1,
                 title: MS_TEXT.modal_title,
                 area: ['85%', '85%'],
-                content: '<div style="height:100%;display:flex;flex-direction:column;">' +
+                content: '<div class="media-selector-modal" style="height:100%;display:flex;flex-direction:column;">' +
                     '<div class="media-selector-upload">' +
                         '<button type="button" class="btn btn-success media-selector-upload-btn"><i class="feather icon-upload"></i>&nbsp;' + MS_TEXT.upload_button + '</button>' +
-                        '<input type="file" accept="image/*" class="media-selector-file" style="display:none;">' +
+                        '<input type="file" accept="image/*" multiple class="media-selector-file" style="display:none;">' +
+                        '<span class="media-selector-drag-hint">' + MS_TEXT.drag_hint + '</span>' +
                     '</div>' +
                     '<div class="media-selector-list" style="flex:1;overflow:auto;"><div class="text-center" style="width:100%;padding:60px 0;color:#999;"><i class="feather icon-loader" style="font-size:36px;display:inline-block;animation:ms-spin 1.2s linear infinite;"></i><br>' + MS_TEXT.loading + '</div></div>' +
                 '</div>'
             });
 
-            var $uploadArea = $('.media-selector-upload');
+            var $layer = $('#layui-layer' + layerIndex);
+            var $uploadArea = $layer.find('.media-selector-upload');
             var $uploadBtn = $uploadArea.find('.media-selector-upload-btn');
             var $fileInput = $uploadArea.find('.media-selector-file');
-            var $box = $('.media-selector-list');
+            var $box = $layer.find('.media-selector-list');
 
             // 上传区交互（绑定弹窗内元素，弹窗关闭即销毁，不累积）
             $uploadBtn.on('click', function () {
@@ -140,46 +206,26 @@ CSS;
             });
 
             $fileInput.on('change', function () {
-                var file = this.files && this.files[0];
-                if (!file) {
-                    return;
-                }
-
-                var originalHtml = $uploadBtn.html();
-                $uploadBtn.prop('disabled', true).html('<i class="feather icon-loader" style="display:inline-block;animation:ms-spin 1.2s linear infinite;"></i>&nbsp;' + MS_TEXT.uploading);
-
-                var formData = new FormData();
-                formData.append('file', file);
-
-                $.ajax({
-                    url: MEDIA_UPLOAD_URL,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'json',
-                    success: function (res) {
-                        $uploadBtn.prop('disabled', false).html(originalHtml);
-
-                        if (!res || res.code !== 0) {
-                            Dcat.error((res && res.message) || MS_TEXT.upload_failed);
-                            return;
-                        }
-
-                        Dcat.success(MS_TEXT.upload_success);
-                        // 新图片插入列表顶部；若当前是空态提示则先清空
-                        if ($box.children('.text-center').length) {
-                            $box.empty();
-                        }
-                        renderItem(res.data, $box, $input, $preview, layerIndex, true);
-                    },
-                    error: function () {
-                        $uploadBtn.prop('disabled', false).html(originalHtml);
-                        Dcat.error(MS_TEXT.upload_failed);
-                    }
-                });
-
+                uploadFiles(this.files, $uploadBtn, $box, $input, $preview, $placeholder, layerIndex);
                 this.value = '';
+            });
+
+            // 拖拽上传：整个弹窗内容区均可拖入多个文件
+            $layer.on('dragover', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).addClass('ms-drag-over');
+            });
+            $layer.on('dragleave', function (e) {
+                e.preventDefault();
+                $(this).removeClass('ms-drag-over');
+            });
+            $layer.on('drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('ms-drag-over');
+                var files = e.originalEvent && e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : null;
+                uploadFiles(files, $uploadBtn, $box, $input, $preview, $placeholder, layerIndex);
             });
 
             $.ajax({
@@ -202,7 +248,7 @@ CSS;
                     }
 
                     list.forEach(function (item) {
-                        renderItem(item, $box, $input, $preview, layerIndex, false);
+                        renderItem(item, $box, $input, $preview, $placeholder, layerIndex, false);
                     });
                 },
                 error: function () {
@@ -229,6 +275,7 @@ JS;
                     'load_failed'    => __('media-selector.load_failed'),
                     'upload_failed'  => __('media-selector.upload_failed'),
                     'loading'        => __('media-selector.loading'),
+                    'drag_hint'      => __('media-selector.drag_hint'),
                 ]),
             ],
             $template

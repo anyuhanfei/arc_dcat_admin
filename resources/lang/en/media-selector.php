@@ -11,4 +11,6 @@ return [
     'upload_failed'  => 'Upload failed',
     'placeholder'    => 'Click the button to select from media library',
     'loading'        => 'Loading...',
+    'drag_hint'      => 'Or drag multiple images anywhere in this modal to upload',
+    'no_image'       => 'No image',
 ];

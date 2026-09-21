@@ -11,4 +11,6 @@ return [
     'upload_failed'  => '上传失败',
     'placeholder'    => '点击右侧按钮从媒体库选择',
     'loading'        => '加载中...',
+    'drag_hint'     => '或拖拽多个图片到弹窗任意位置上传',
+    'no_image'       => '暂无图片',
 ];

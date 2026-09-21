@@ -32,6 +32,10 @@ use Dcat\Admin\Show;
 // 全局按钮内容垂直居中，统一系统按钮与自定义按钮的显示效果
 Admin::style('.btn { display: inline-flex; align-items: center; justify-content: center; line-height: 1.4;}');
 
+// UEditor 富文本浮层置顶：多图/视频/音乐等对话框（#edui_fixedlayer 默认 z-index:9999）
+// 远低于 Dcat layer 弹窗（zIndex 起始 19891014），会被表单弹窗压住；这里提到 99999999 保证浮在最上层
+Admin::style('#edui_fixedlayer, .edui-dialog, .edui-dialog-modalmask, .edui-popup { z-index: 99999999 !important; }');
+
 // 全部 Grid 弹窗化：新增/编辑/查看在 80% 弹窗中完成（菜单管理用 Tree 组件，天然不受影响）
 Grid::resolving(function (Grid $grid) {
     $grid->enableDialogCreate();                        // 新增按钮 → 弹窗
