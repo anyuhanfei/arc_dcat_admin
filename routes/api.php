@@ -55,6 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('feedback/submit', [\App\Api\Controllers\Feedback\FeedbackController::class, 'submit']);
     Route::post('feedback/list', [\App\Api\Controllers\Feedback\FeedbackController::class, 'list']);
     Route::post('feedback/detail', [\App\Api\Controllers\Feedback\FeedbackController::class, 'detail']);
+
+    // 系统消息相关（需登录）
+    Route::get('messages/unread-count', [\App\Api\Controllers\Message\MessageController::class, 'unreadCount']);
+    Route::get('messages', [\App\Api\Controllers\Message\MessageController::class, 'index']);
+    Route::get('messages/{id}', [\App\Api\Controllers\Message\MessageController::class, 'show']);
+    Route::post('messages/read-all', [\App\Api\Controllers\Message\MessageController::class, 'readAll']);
     Route::post('user/info', [\App\Api\Controllers\User\UserController::class, 'info']);
     Route::post('user/update', [\App\Api\Controllers\User\UserController::class, 'update']);
     Route::post('user/logout', [\App\Api\Controllers\User\UserController::class, 'logout']);

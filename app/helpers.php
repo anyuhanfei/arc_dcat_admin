@@ -404,3 +404,25 @@ function sys_config(string $key, mixed $default = null): mixed
     }
     return $config->value;
 }
+
+/**
+ * 格式化相对时间（如 10分钟前、2小时前，超过24小时显示完整时间）
+ */
+function format_relative_time(?\Carbon\Carbon $time): string
+{
+    if (! $time) {
+        return '';
+    }
+    $diffMinutes = abs($time->diffInMinutes(now()));
+    if ($diffMinutes < 1) {
+        return '刚刚';
+    }
+    if ($diffMinutes < 60) {
+        return (int) $diffMinutes . '分钟前';
+    }
+    $diffHours = abs($time->diffInHours(now()));
+    if ($diffHours < 24) {
+        return (int) $diffHours . '小时前';
+    }
+    return $time->format('Y-m-d H:i:s');
+}

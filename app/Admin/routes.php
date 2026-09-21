@@ -42,6 +42,9 @@ Route::group([
 
     $router->resource('feedback', \App\Admin\Controllers\Feedback\FeedbackController::class);
 
+    $router->resource('messages', \App\Admin\Controllers\Message\MessageController::class);
+    $router->put('messages/{id}/recall', [\App\Admin\Controllers\Message\MessageController::class, 'recall']);
+
     $router->resource('user/users', \App\Admin\Controllers\User\UsersController::class);
     $router->get('user/user-wallet-records', \App\Admin\Controllers\User\UserWalletRecordsController::class.'@index');
 
