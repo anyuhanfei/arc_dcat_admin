@@ -97,7 +97,7 @@ class SysAppVersionsController extends AdminController
             $form->url('harmony_store_url', admin_trans_field('harmony_store_url'));
             $form->radio('force_update', admin_trans_field('force_update'))->options(__('sys-app-versions.enums.force_update'))->default(1);
             $form->radio('is_show', admin_trans_field('is_show'))->options(__('sys-app-versions.enums.is_show'))->default(1);
-            $form->ueditor('description', admin_trans_field('description'));
+            $form->richEditor('description', admin_trans_field('description'));
 
             $form->display('created_at', admin_trans_field('created_at'));
             $form->display('updated_at', admin_trans_field('updated_at'));

@@ -116,7 +116,7 @@ class SysArticlesController extends AdminController
                     }
                     return $value ? array_filter(array_map('trim', explode(',', (string) $value))) : [];
                 });
-            $form->ueditor('content', admin_trans_field('content'));
+            $form->richEditor('content', admin_trans_field('content'));
             $form->radio('status', admin_trans_field('status'))->options(__('sys-articles.enums.status'))->default(0);
         });
     }

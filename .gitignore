@@ -18,7 +18,8 @@
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
-/public/vendor
+/public/vendor/*
+!/public/vendor/wangeditor/
 /storage/*.key
 /storage/pail
 /vendor

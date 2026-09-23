@@ -139,7 +139,7 @@ class SysConfigEditorController extends AdminController
                 $field = $form->textarea($fieldName, $label)->rows(5)->value($config->value);
                 break;
             case ConfigType::EDITOR->value:
-                $field = $form->ueditor($fieldName, $label)->value($config->value);
+                $field = $form->richEditor($fieldName, $label)->value($config->value);
                 break;
             case ConfigType::RADIO->value:
                 $field = $form->radio($fieldName, $label)->options($this->parseOptions($config->options))->value($config->value);

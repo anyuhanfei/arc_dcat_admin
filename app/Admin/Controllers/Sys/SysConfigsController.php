@@ -216,7 +216,7 @@ class SysConfigsController extends AdminController
                 $form->textarea('value', $label)->rows(5)->value($value);
                 break;
             case ConfigType::EDITOR->value:
-                $form->ueditor('value', $label)->value($value);
+                $form->richEditor('value', $label)->value($value);
                 break;
             case ConfigType::RADIO->value:
                 $form->radio('value', $label)->options($this->parseOptions($config->options))->value($value);

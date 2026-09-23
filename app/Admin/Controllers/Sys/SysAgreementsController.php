@@ -58,7 +58,7 @@ class SysAgreementsController extends AdminController
         return Form::make(new SysAgreements(), function (Form $form) {
             $form->display('id');
             $form->text('title', admin_trans_field('title'));
-            $form->ueditor('content', admin_trans_field('content'));
+            $form->richEditor('content', admin_trans_field('content'));
             $form->disableDeleteButton();
         });
     }
