@@ -88,6 +88,7 @@ return [
     'show'                  => 'Show',
     'entries'               => 'entries',
     'captcha'               => 'Captcha',
+    'login_captcha'         => 'Captcha',
     'action'                => 'Action',
     'title'                 => 'Title',
     'description'           => 'Description',

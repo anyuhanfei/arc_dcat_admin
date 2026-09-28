@@ -145,7 +145,7 @@ class MessageController extends AdminController
 
             $form->text('title', admin_trans_field('title'))->required();
 
-            admin_form_media_selector_field($form->mediaSelector('image', admin_trans_field('image')));
+            $form->adminImage('image', admin_trans_field('image'));
 
             $form->textarea('content', admin_trans_field('content'))->rows(5)->required();
 

@@ -62,7 +62,7 @@ class SysArticleCategoriesController extends AdminController
         return Form::make(new SysArticleCategories(), function (Form $form) {
             $form->display('id');
             $form->text('name', admin_trans_field('name'))->required();
-            $form->mediaSelector('image', admin_trans_field('image'));
+            $form->adminImage('image', admin_trans_field('image'));
             $form->radio('is_show', admin_trans_field('is_show'))->options(__('sys-article-categories.enums.is_show'))->default(1);
         });
     }

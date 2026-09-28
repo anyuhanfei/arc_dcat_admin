@@ -233,7 +233,7 @@ class SysConfigsController extends AdminController
                 $form->select('value', $label)->options($this->parseOptions($config->options))->value($value);
                 break;
             case ConfigType::IMAGE->value:
-                admin_form_media_selector_field($form->mediaSelector('value', $label))->value($value);
+                $form->adminImage('value', $label)->value($value);
                 break;
             case ConfigType::FILE->value:
                 admin_form_file_field($form->file('value', $label), $this->parseExtensions($config->allowed_extensions))->value($value);

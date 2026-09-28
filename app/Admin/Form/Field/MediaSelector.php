@@ -27,7 +27,7 @@ class MediaSelector extends Field
     }
 
     /**
-     * 字段内联 HTML：预览图 + 路径输入框（保存值）+ 「从媒体库选择」按钮.
+     * 字段内联 HTML：预览卡片（可点击/拖拽上传）+ 路径输入框 + 「从媒体库选择」按钮.
      */
     protected function inlineHtml()
     {
@@ -40,6 +40,8 @@ class MediaSelector extends Field
         $previewStyle = $hasValue ? '' : ' style="display:none"';
         $placeholderStyle = $hasValue ? ' style="display:none"' : '';
         $noImageText = e(__('media-selector.no_image'));
+        $clickUploadText = e(__('media-selector.click_upload'));
+        $replaceText = e(__('media-selector.replace'));
 
         $label = e($this->label);
         $attributes = $this->formatAttributes();
@@ -52,12 +54,15 @@ class MediaSelector extends Field
     <div class="{$viewClass['field']}">
         <div class="help-block with-errors"></div>
         <div class="media-selector-card">
-            <div class="media-selector-preview-wrap">
+            <div class="media-selector-dropzone media-selector-preview-wrap" title="{$clickUploadText}">
                 <img src="{$previewUrl}" class="media-selector-preview"{$previewStyle}>
                 <div class="media-selector-placeholder"{$placeholderStyle}>
                     <i class="feather icon-image"></i>
                     <span>{$noImageText}</span>
+                    <span class="media-selector-drop-hint">{$clickUploadText}</span>
                 </div>
+                <div class="media-selector-replace-mask"{$placeholderStyle}>{$replaceText}</div>
+                <input type="file" accept="image/*" class="media-selector-direct-file" style="display:none;">
             </div>
             <div class="input-group media-selector-input-group">
                 <input {$attributes}>
@@ -94,6 +99,14 @@ HTML;
 .media-selector-list .media-selector-item img{width:96px;height:72px;object-fit:cover;border-radius:4px;display:block;margin:0 auto 4px;background:#f4f6f8;}
 .media-selector-list .media-selector-item span{font-size:12px;color:#555;word-break:break-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .media-selector-modal.ms-drag-over{box-shadow:inset 0 0 0 3px #5b8ff9;background:rgba(91,143,249,.05);}
+/* 直接上传卡片：可点击/拖拽 */
+.media-selector-dropzone{position:relative;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.media-selector-dropzone:hover{border-color:#5b8ff9;box-shadow:0 0 0 2px rgba(91,143,249,.15);}
+.media-selector-dropzone.ms-direct-dragover{border-color:#5b8ff9;box-shadow:inset 0 0 0 3px #5b8ff9;background:rgba(91,143,249,.08);}
+.media-selector-drop-hint{display:block;font-size:12px;color:#5b8ff9;margin-top:4px;}
+.media-selector-replace-mask{position:absolute;inset:0;background:rgba(0,0,0,.55);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;pointer-events:none;}
+.media-selector-dropzone:hover .media-selector-replace-mask{opacity:1;}
+.media-selector-dropzone .feather.icon-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:#5b8ff9;animation:ms-spin 1.2s linear infinite;}
 CSS;
     }
 
@@ -173,6 +186,84 @@ CSS;
             }
         });
     }
+
+    // 卡片直接上传：点击选择 / 拖拽文件到卡片，上传成功后回填路径和预览（不弹窗）
+    function directUpload(files, $card) {
+        if (!files || !files.length) return;
+
+        var $input = $card.find('input');
+        var $preview = $card.find('.media-selector-preview');
+        var $placeholder = $card.find('.media-selector-placeholder');
+        var $mask = $card.find('.media-selector-replace-mask');
+
+        var $zone = $card.find('.media-selector-dropzone');
+        $zone.css('pointer-events', 'none');
+        $zone.append('<i class="feather icon-loader"></i>');
+
+        var formData = new FormData();
+        formData.append('file[]', files[0]);
+
+        $.ajax({
+            url: MEDIA_UPLOAD_URL,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (res) {
+                $zone.css('pointer-events', '').find('.icon-loader').remove();
+                if (!res || res.code !== 0) {
+                    Dcat.error((res && res.message) || MS_TEXT.upload_failed);
+                    return;
+                }
+                var item = (res.data || [])[0];
+                if (!item) { Dcat.error(MS_TEXT.upload_failed); return; }
+
+                $input.val(item.path).trigger('change');
+                if (item.url) {
+                    $preview.attr('src', item.url).show();
+                    $placeholder.hide();
+                    $mask.show();
+                }
+                Dcat.success(MS_TEXT.upload_success);
+            },
+            error: function () {
+                $zone.css('pointer-events', '').find('.icon-loader').remove();
+                Dcat.error(MS_TEXT.upload_failed);
+            }
+        });
+    }
+
+    // 卡片点击：触发隐藏 file input
+    $(document).off('click.dcat-ms-drop').on('click.dcat-ms-drop', '.media-selector-dropzone', function (e) {
+        // 点在遮罩上也允许上传
+        $(this).closest('.media-selector-card').find('.media-selector-direct-file').trigger('click');
+    });
+
+    // file input 变化：直接上传（阻止冒泡，避免触发卡片再次 click）
+    $(document).off('change.dcat-ms-file').on('change.dcat-ms-file', '.media-selector-direct-file', function (e) {
+        e.stopPropagation();
+        var $card = $(this).closest('.media-selector-card');
+        directUpload(this.files, $card);
+        this.value = '';
+    });
+
+    // 拖拽到卡片
+    $(document).off('dragover.dcat-ms-drop dragleave.dcat-ms-drop drop.dcat-ms-drop')
+        .on('dragover.dcat-ms-drop', '.media-selector-dropzone', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            $(this).addClass('ms-direct-dragover');
+        })
+        .on('dragleave.dcat-ms-drop', '.media-selector-dropzone', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            $(this).removeClass('ms-direct-dragover');
+        })
+        .on('drop.dcat-ms-drop', '.media-selector-dropzone', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            $(this).removeClass('ms-direct-dragover');
+            var files = e.originalEvent && e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : null;
+            directUpload(files, $(this).closest('.media-selector-card'));
+        });
 
     $(document).off('click.dcat-media-selector').on('click.dcat-media-selector', '.media-selector-open', function () {
             var $card = $(this).closest('.media-selector-card');

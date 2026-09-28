@@ -13,4 +13,7 @@ return [
     'loading'        => '加载中...',
     'drag_hint'     => '或拖拽多个图片到弹窗任意位置上传',
     'no_image'       => '暂无图片',
+    'click_upload'   => '点击或拖拽图片到此上传',
+    'replace'        => '点击或拖拽替换图片',
+    'confirm_select' => '确定选择',
 ];

@@ -84,6 +84,7 @@ return [
     'show'                  => '显示',
     'entries'               => '条',
     'captcha'               => '验证码',
+    'login_captcha'         => '验证码',
     'action'                => '操作',
     'title'                 => '标题',
     'description'           => '简介',

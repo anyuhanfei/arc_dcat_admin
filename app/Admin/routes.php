@@ -12,6 +12,10 @@ Admin::routes();
 // 自定义表单字段注册：富文本编辑器（wangEditor v5，App\Admin\Form\Field\RichEditor）
 \Dcat\Admin\Form::extend('richEditor', \App\Admin\Form\Field\RichEditor::class);
 
+// 自定义表单字段注册：封装图片上传（自动上传/日期目录/重命名/缩略图/媒体库联动）
+\Dcat\Admin\Form::extend('adminImage', \App\Admin\Form\Field\AdminImage::class);
+\Dcat\Admin\Form::extend('adminMultipleImage', \App\Admin\Form\Field\AdminMultipleImage::class);
+
 // 登录验证码刷新（无需登录，只带路由前缀不带中间件）
 Route::prefix(config('admin.route.prefix'))
     ->withoutMiddleware(config('admin.route.middleware'))
@@ -26,6 +30,7 @@ Route::group([
     $router->get('/', 'HomeController@index');
     $router->get('media-selector/list', [\App\Admin\Controllers\MediaSelectorController::class, 'list']);
     $router->post('media-selector/upload', [\App\Admin\Controllers\MediaSelectorController::class, 'upload']);
+    $router->post('media-selector/delete', [\App\Admin\Controllers\MediaSelectorController::class, 'delete']);
     $router->post('rich-editor/upload', [\App\Admin\Controllers\RichEditorController::class, 'upload']);
 
     $router->resource('sys/banners', \App\Admin\Controllers\Sys\SysBannersController::class);

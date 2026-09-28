@@ -3,7 +3,6 @@
 namespace App\Admin\Controllers\User;
 
 use App\Admin\Repositories\User\Users;
-use App\Admin\Form\Field\MediaSelector;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
@@ -128,7 +127,7 @@ class UsersController extends AdminController
         $form->text('email', admin_trans_field('email'));
         $form->password('password', admin_trans_field('password'));
         $form->text('nickname', admin_trans_field('nickname'));
-        $form->mediaSelector('avatar', admin_trans_field('avatar'));
+        $form->adminImage('avatar', admin_trans_field('avatar'));
         $form->text('signature', admin_trans_field('signature'));
         $form->radio('gender', admin_trans_field('gender'))->options(__('users.enums.gender'))->default(0);
         $form->date('birthday', admin_trans_field('birthday'));

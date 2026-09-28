@@ -99,7 +99,7 @@ class SysArticlesController extends AdminController
             $form->select('category_id', admin_trans_field('category_id'))->options(SysArticleCategories::query()->orderBy('sort')->pluck('name', 'id'))->required();
             $form->text('title', admin_trans_field('title'))->required();
             $form->text('author', admin_trans_field('author'));
-            $form->mediaSelector('image', admin_trans_field('image'));
+            $form->adminImage('image', admin_trans_field('image'));
             $form->textarea('summary', admin_trans_field('summary'));
             $form->tags('keywords', admin_trans_field('keywords'))
                 ->saving(function ($value) {

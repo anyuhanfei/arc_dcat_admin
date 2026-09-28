@@ -75,7 +75,7 @@ class SysNoticesController extends AdminController
     {
         return Form::make(new SysNotices(), function (Form $form) {
             $form->text('title', admin_trans_field('title'))->required();
-            $form->mediaSelector('image', admin_trans_field('image'));
+            $form->adminImage('image', admin_trans_field('image'));
             $form->richEditor('content', admin_trans_field('content'));
             $form->radio('status', admin_trans_field('status'))->options(__('sys-notices.enums.status'))->default(0);
         });

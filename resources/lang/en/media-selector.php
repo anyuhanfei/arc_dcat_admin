@@ -13,4 +13,7 @@ return [
     'loading'        => 'Loading...',
     'drag_hint'      => 'Or drag multiple images anywhere in this modal to upload',
     'no_image'       => 'No image',
+    'click_upload'  => 'Click or drag image here to upload',
+    'replace'       => 'Click or drag to replace',
+    'confirm_select' => 'Confirm',
 ];
