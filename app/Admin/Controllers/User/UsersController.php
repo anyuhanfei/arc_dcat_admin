@@ -18,6 +18,7 @@ class UsersController extends AdminController
     protected function grid()
     {
         return Grid::make(new Users(), function (Grid $grid) {
+            $grid->showRecycledButton();
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('account', admin_trans_field('account'));
             $grid->column('phone', admin_trans_field('phone'));
