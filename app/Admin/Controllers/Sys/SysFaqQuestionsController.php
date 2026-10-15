@@ -19,6 +19,7 @@ class SysFaqQuestionsController extends AdminController
     protected function grid()
     {
         return Grid::make(new SysFaqQuestions(), function (Grid $grid) {
+            $grid->showRecycledButton();
             $grid->sortable('sort');
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('category_id', admin_trans_field('category_id'))->display(function ($v) {

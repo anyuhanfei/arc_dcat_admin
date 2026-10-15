@@ -6,10 +6,12 @@ use App\Enums\FeedbackStatus;
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserFeedback extends Model
 {
 	use HasDateTimeFormatter;
+	use SoftDeletes;
 
     protected $table = 'user_feedbacks';
 

@@ -5,6 +5,7 @@ namespace App\Models\Sys;
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -12,6 +13,7 @@ class SysFaqQuestions extends Model implements Sortable
 {
 	use HasDateTimeFormatter;
 	use SortableTrait;
+	use SoftDeletes;
 
     protected $table = 'sys_faq_questions';
 

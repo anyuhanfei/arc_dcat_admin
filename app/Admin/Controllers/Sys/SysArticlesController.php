@@ -19,6 +19,7 @@ class SysArticlesController extends AdminController
     protected function grid()
     {
         return Grid::make(new SysArticles(), function (Grid $grid) {
+            $grid->showRecycledButton();
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('category_id', admin_trans_field('category_id'))->display(function ($v) {
                 static $names = null;

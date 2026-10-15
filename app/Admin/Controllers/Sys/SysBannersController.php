@@ -18,6 +18,7 @@ class SysBannersController extends AdminController
     protected function grid()
     {
         return Grid::make(new SysBanners(), function (Grid $grid) {
+            $grid->showRecycledButton();
             // 拖拽排序（替代手动 sort 输入）
             $grid->sortable('sort');
 

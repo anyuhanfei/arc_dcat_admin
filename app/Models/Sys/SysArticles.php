@@ -6,10 +6,12 @@ use App\Enums\PublishStatus;
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SysArticles extends Model
 {
 	use HasDateTimeFormatter;
+	use SoftDeletes;
 
     protected $table = 'sys_articles';
 
