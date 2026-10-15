@@ -6,6 +6,7 @@ return [
         'account'           => '登录账号',
         'phone'             => '手机号',
         'email'             => '邮箱',
+        'wallet'            => '钱包',
         'nickname'          => '昵称',
         'avatar'            => '头像',
         'gender'            => '性别',

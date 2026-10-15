@@ -6,6 +6,7 @@ return [
         'account'           => 'Account',
         'phone'             => 'Phone',
         'email'             => 'Email',
+        'wallet'            => 'Wallet',
         'nickname'          => 'Nickname',
         'avatar'            => 'Avatar',
         'gender'            => 'Gender',

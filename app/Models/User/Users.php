@@ -5,6 +5,7 @@ namespace App\Models\User;
 use Dcat\Admin\Traits\HasDateTimeFormatter;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Users extends Model
 {
@@ -17,6 +18,11 @@ class Users extends Model
     protected $fillable = ['id', 'account', 'phone', 'email', 'password', 'nickname', 'avatar', 'signature', 'gender', 'birthday', 'status', 'phone_verified_at', 'email_verified_at'];
 
     protected $hidden = ['password', 'remember_token'];
+
+    public function wallets(): HasMany
+    {
+        return $this->hasMany(UserWallet::class, 'user_id');
+    }
 
     /**
      * 与 API 的 App\Models\User 保持一致：密码自动 bcrypt 加密（后台创建的用户可直接登录）

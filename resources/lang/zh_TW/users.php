@@ -6,6 +6,7 @@ return [
         'account'           => '登入帳號',
         'phone'             => '手機號碼',
         'email'             => '信箱',
+        'wallet'            => '錢包',
         'nickname'          => '暱稱',
         'avatar'            => '大頭貼',
         'gender'            => '性別',

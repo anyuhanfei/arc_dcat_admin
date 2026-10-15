@@ -19,16 +19,28 @@ class UsersController extends AdminController
     {
         return Grid::make(new Users(), function (Grid $grid) {
             $grid->showRecycledButton();
+            $grid->model()->with('wallets');
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('account', admin_trans_field('account'));
-            $grid->column('phone', admin_trans_field('phone'));
-            $grid->column('email', admin_trans_field('email'));
-            $grid->column('nickname', admin_trans_field('nickname'));
             $grid->column('avatar', admin_trans_field('avatar'))->display(function ($v) {
                 return $v ? '<img src="'.e(full_url($v)).'" style="height:40px;border-radius:4px;">' : '';
             });
+            $grid->column('nickname', admin_trans_field('nickname'));
+            $grid->column('phone', admin_trans_field('phone'));
+            $grid->column('email', admin_trans_field('email'));
+            $grid->column('wallets', admin_trans_field('wallet'))->display(function () {
+                $lines = [];
+                foreach (config('business.wallet.currencies') as $currency => $cfg) {
+                    $balance = $this->wallets->where('currency', $currency)->first();
+                    $amount = $balance ? $balance->balance : '0.00';
+                    $lines[] = wallet_currency_name($currency).'：'.$amount;
+                }
+                return implode('<br>', $lines);
+            });
             $grid->column('gender', admin_trans_field('gender'))->using(__('users.enums.gender'))->label([0 => 'default', 1 => 'primary', 2 => 'pink']);
-            $grid->column('birthday', admin_trans_field('birthday'));
+            $grid->column('birthday', admin_trans_field('birthday'))->display(function ($v) {
+                return $v ? \Carbon\Carbon::parse($v)->format('Y-m-d') : '';
+            });
             $grid->column('status', admin_trans_field('status'))->using(__('users.enums.status'))->label([0 => 'danger', 1 => 'success']);
             $grid->column('created_at', admin_trans_field('created_at'))->sortable();
 
@@ -60,20 +72,26 @@ class UsersController extends AdminController
         return Show::make($id, new Users(), function (Show $show) {
             $show->field('id');
             $show->field('account');
+            $show->field('avatar')->image('', 100, 100);
+            $show->field('nickname');
             $show->field('phone');
             $show->field('email');
-            $show->field('password');
-            $show->field('nickname');
-            $show->field('avatar');
+            $show->field(admin_trans_field('wallet'))->as(function () {
+                $lines = [];
+                foreach (config('business.wallet.currencies') as $currency => $cfg) {
+                    $balance = \App\Models\User\UserWallet::where('user_id', $this->id)
+                        ->where('currency', $currency)->value('balance');
+                    $lines[] = wallet_currency_name($currency).'：'.($balance ?? '0.00');
+                }
+                return implode('<br>', $lines);
+            })->unescape();
             $show->field('signature');
-            $show->field('gender');
-            $show->field('birthday');
-            $show->field('status');
-            $show->field('phone_verified_at');
-            $show->field('email_verified_at');
-            $show->field('remember_token');
+            $show->field('gender')->using(__('users.enums.gender'));
+            $show->field('birthday')->as(function ($v) {
+                return $v ? \Carbon\Carbon::parse($v)->format('Y-m-d') : '';
+            });
+            $show->field('status')->using(__('users.enums.status'));
             $show->field('created_at');
-            $show->field('updated_at');
         });
     }
 
@@ -123,12 +141,13 @@ class UsersController extends AdminController
      */
     protected function buildUserInfoFields(Form $form)
     {
+        $form->adminImage('avatar', admin_trans_field('avatar'));
         $form->text('account', admin_trans_field('account'))->required();
+        $form->text('nickname', admin_trans_field('nickname'));
         $form->text('phone', admin_trans_field('phone'));
         $form->text('email', admin_trans_field('email'));
-        $form->password('password', admin_trans_field('password'));
-        $form->text('nickname', admin_trans_field('nickname'));
-        $form->adminImage('avatar', admin_trans_field('avatar'));
+        $form->password('password', admin_trans_field('password'))
+            ->help('留空则保持原密码不变');
         $form->text('signature', admin_trans_field('signature'));
         $form->radio('gender', admin_trans_field('gender'))->options(__('users.enums.gender'))->default(0);
         $form->date('birthday', admin_trans_field('birthday'));
