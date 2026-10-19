@@ -23,6 +23,7 @@ class BannersController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/banners/list',
             summary: '轮播图列表',
+            description: '按位置标识返回首页/指定位置的轮播图列表，按排序字段正序返回，用于 APP 首页 banner 展示。',
             tags: ['公共接口/轮播图'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -40,15 +41,15 @@ class BannersController extends \Illuminate\Routing\Controller
                         properties: [
                             new OA\Property(property: 'code', type: 'integer', example: 1),
                             new OA\Property(property: 'msg', type: 'string', example: 'success'),
-                            new OA\Property(property: 'data', type: 'array', items: new OA\Items(
+                            new OA\Property(property: 'data', type: 'array', description: '轮播图列表', items: new OA\Items(
                                 properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'position', type: 'string', example: 'home'),
-                                    new OA\Property(property: 'position_name', type: 'string', example: '首页轮播'),
-                                    new OA\Property(property: 'image', type: 'string', example: 'https://example.com/uploads/xxx.jpg'),
-                                    new OA\Property(property: 'link_type', type: 'string', example: 'none'),
-                                    new OA\Property(property: 'link_type_name', type: 'string', example: '无关联'),
-                                    new OA\Property(property: 'link_value', type: 'string', example: ''),
+                                    new OA\Property(property: 'id', description: '轮播图ID', type: 'integer', example: 1),
+                                    new OA\Property(property: 'position', type: 'string', description: '位置标识', example: 'home'),
+                                    new OA\Property(property: 'position_name', type: 'string', description: '位置中文名称', example: '首页轮播'),
+                                    new OA\Property(property: 'image', type: 'string', description: '轮播图完整 URL', example: 'https://example.com/uploads/xxx.jpg'),
+                                    new OA\Property(property: 'link_type', type: 'string', description: '跳转类型：none=无跳转，其他取值见 link_type_name', example: 'none'),
+                                    new OA\Property(property: 'link_type_name', type: 'string', description: '跳转类型中文名称', example: '无关联'),
+                                    new OA\Property(property: 'link_value', type: 'string', description: '跳转目标值（如链接 URL、文章 ID 等，无跳转时为空字符串）', example: ''),
                                 ],
                                 type: 'object'
                             )),

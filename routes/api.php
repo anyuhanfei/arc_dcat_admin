@@ -27,6 +27,9 @@ Route::post('sys/notices/latest', [\App\Api\Controllers\Sys\NoticesController::c
 // 系统配置相关（公开接口）
 Route::post('sys/configs', [\App\Api\Controllers\Sys\ConfigsController::class, 'index']);
 
+// 对接须知（公开接口，空逻辑文档接口）
+Route::get('docs/introduction', [\App\Api\Controllers\Docs\IntroductionController::class, 'index']);
+
 // 登录相关（公开接口）
 Route::prefix('login')->group(function () {
     Route::post('password/login', [\App\Api\Controllers\Login\PasswordController::class, 'login']);
@@ -57,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('feedback/detail', [\App\Api\Controllers\Feedback\FeedbackController::class, 'detail']);
 
     // 系统消息相关（需登录）
-    Route::get('messages/unread-count', [\App\Api\Controllers\Message\MessageController::class, 'unreadCount']);
-    Route::get('messages', [\App\Api\Controllers\Message\MessageController::class, 'index']);
-    Route::get('messages/{id}', [\App\Api\Controllers\Message\MessageController::class, 'show']);
+    Route::post('messages/unread-count', [\App\Api\Controllers\Message\MessageController::class, 'unreadCount']);
+    Route::post('messages', [\App\Api\Controllers\Message\MessageController::class, 'index']);
+    Route::post('messages/{id}', [\App\Api\Controllers\Message\MessageController::class, 'show']);
     Route::post('messages/read-all', [\App\Api\Controllers\Message\MessageController::class, 'readAll']);
     Route::post('user/info', [\App\Api\Controllers\User\UserController::class, 'info']);
     Route::post('user/update', [\App\Api\Controllers\User\UserController::class, 'update']);

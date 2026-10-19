@@ -19,6 +19,7 @@ class PasswordEmailController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/email/update',
             summary: '邮箱验证码改密（一步验证版）',
+            description: '通过邮箱验证码直接重置密码（一步完成）。',
             tags: ['用户/邮箱改密'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -59,6 +60,7 @@ class PasswordEmailController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/email/verify',
             summary: '验证邮箱验证码（两步验证版）',
+            description: '两步改密第一步：校验邮箱验证码后下发 verify_token。',
             tags: ['用户/邮箱改密'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -101,6 +103,7 @@ class PasswordEmailController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/email/change',
             summary: '改密（两步验证版）',
+            description: '两步改密第二步：用 verify_token + 新密码完成改密。',
             tags: ['用户/邮箱改密'],
             requestBody: new OA\RequestBody(
                 required: true,

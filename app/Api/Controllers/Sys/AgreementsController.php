@@ -38,6 +38,7 @@ class AgreementsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/agreements/list',
             summary: '协议列表',
+            description: '按协议类型（如 user_agreement/privacy）返回对应协议文本。',
             tags: ['公共接口/协议管理'],
             responses: [
                 new OA\Response(
@@ -49,8 +50,8 @@ class AgreementsController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: 'success'),
                             new OA\Property(property: 'data', type: 'array', items: new OA\Items(
                                 properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'title', type: 'string', example: '用户协议'),
+                                    new OA\Property(property: 'id', description: '协议ID', type: 'integer', example: 1),
+                                    new OA\Property(property: 'title', type: 'string', description: '协议标题', example: '用户协议'),
                                 ],
                                 type: 'object'
                             )),
@@ -71,6 +72,7 @@ class AgreementsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/agreements/detail',
             summary: '协议详情',
+            description: '按 ID 查询单条协议完整内容。',
             tags: ['公共接口/协议管理'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -90,9 +92,9 @@ class AgreementsController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: 'success'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'title', type: 'string', example: '用户协议'),
-                                    new OA\Property(property: 'content', type: 'string', example: '协议内容...'),
+                                    new OA\Property(property: 'id', description: '协议ID', type: 'integer', example: 1),
+                                    new OA\Property(property: 'title', type: 'string', description: '协议标题', example: '用户协议'),
+                                    new OA\Property(property: 'content', type: 'string', description: '协议正文（HTML 富文本）', example: '协议内容...'),
                                 ]
                             ),
                         ]

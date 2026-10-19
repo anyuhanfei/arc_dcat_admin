@@ -18,11 +18,13 @@ const NO_BIND_PHONE = "no_bind_phone";
  * 返回异常回调信息
  *
  * @param string $msg 返回信息
- * @param string $error 特殊错误码
- * @return void
+ * @param string $errorFlag 错误标识（特殊场景英文标识，无则空字符串）
+ * @param array $errors 表单校验字段错误明细（字段名 => [错误文案]），为空时输出空对象 {}
+ * @param null|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|LengthAwarePaginator $data 附加返回数据，默认为空数组
+ * @return \Illuminate\Http\JsonResponse
  */
-function error(string $msg, string $error = ''){
-    return return_data(ERROR_CODE, $msg, [], $error);
+function error(string $msg, string $errorFlag = '', array $errors = [], null|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|LengthAwarePaginator $data = []){
+    return return_data(ERROR_CODE, $msg, $data, $errorFlag, $errors);
 }
 
 /**
@@ -51,16 +53,45 @@ function throwBusinessException(string $msg, string $error = ''){
  *
  * @param integer $code 项目自定义错误码
  * @param string $msg 返回信息
- * @param array $data 返回数据
- * @param string $error 特殊错误码
- * @return void
+ * @param null|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|LengthAwarePaginator $data 返回数据
+ * @param string $errorFlag 错误标识（特殊场景英文标识，无则空字符串）
+ * @param array $errors 表单校验字段错误明细（字段名 => [错误文案]），为空时输出空对象 {}
+ * @return \Illuminate\Http\JsonResponse
  */
-function return_data(int $code, string $msg, null|array|Illuminate\Support\Collection|Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|LengthAwarePaginator $data, string $error = ''){
-    $response = ['code'=> $code, 'msg'=> $msg, 'data'=> $data];
-    if ($error) {
-        $response['error'] = $error;
+function return_data(
+    int $code,
+    string $msg,
+    null|array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|LengthAwarePaginator $data,
+    string $errorFlag = '',
+    array $errors = []
+){
+    $response = [
+        'code' => $code,
+        'msg'  => $msg,
+        'data' => api_normalize_data($data),
+    ];
+    // 仅失败时才带 errors 和 error_flag（成功响应保持简洁）
+    if ($code !== SUCCESS_CODE) {
+        $response['errors']     = (object) $errors;
+        $response['error_flag'] = $errorFlag;
     }
     return response()->json($response, 200); # 此 200 为真正的 http 状态码
+}
+
+/**
+ * API 返回数据规范化：递归把 data 中的 null 值转成空字符串，避免前端收到 null
+ *  只处理 array 与 null；其它类型（Model/Collection/Carbon/int/string/bool 等）原样返回，
+ *  交给后续 response()->json() 自行序列化，不破坏现有行为。
+ */
+function api_normalize_data(mixed $data): mixed
+{
+    if (is_array($data)) {
+        foreach ($data as $k => $v) {
+            $data[$k] = api_normalize_data($v);
+        }
+        return $data;
+    }
+    return $data === null ? '' : $data;
 }
 
 /**

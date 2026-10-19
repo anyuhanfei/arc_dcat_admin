@@ -19,6 +19,7 @@ class ConfigsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sys/configs',
             summary: '系统配置',
+            description: '返回前端需要的系统级键值对配置（如客服微信、关于我们链接等）。',
             tags: ['公共接口/系统配置'],
             responses: [
                 new OA\Response(
@@ -32,7 +33,7 @@ class ConfigsController extends \Illuminate\Routing\Controller
                                 property: 'data',
                                 type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'project_name', type: 'string', example: '项目名称'),
+                                    new OA\Property(property: 'project_name', type: 'string', description: '项目名称（APP 端展示用）', example: '项目名称'),
                                 ],
                             ),
                         ]

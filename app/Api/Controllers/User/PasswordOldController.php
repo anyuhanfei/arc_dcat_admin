@@ -19,6 +19,7 @@ class PasswordOldController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/old/update',
             summary: '旧密码改密（一步验证版）',
+            description: '通过旧密码直接修改新密码（一步完成）。',
             tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -58,6 +59,7 @@ class PasswordOldController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/old/verify',
             summary: '验证旧密码（两步验证版）',
+            description: '两步改密第一步：校验旧密码后下发 verify_token。',
             tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -99,6 +101,7 @@ class PasswordOldController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/user/password/old/change',
             summary: '改密（两步验证版）',
+            description: '两步改密第二步：用 verify_token + 新密码完成改密。',
             tags: ['用户/旧密码改密'],
             requestBody: new OA\RequestBody(
                 required: true,

@@ -297,3 +297,6 @@ tmp/                                            # 对话中生成的临时文件
 | 功能开关用 Pennant | 灰度发布、AB 测试、功能开关用 Laravel Pennant，不写 `if (env('XXX'))` 硬编码判断 |
 | 健康检查用 Health | 如需健康检查端点，用 Laravel 内置 Health 组件（`php artisan health:install`），不手写 |
 | 队列任务规范 | 耗时任务（短信、邮件、文件处理、第三方回调）必须走 Queue；Job 类放 `app/Jobs/`，失败重试次数在 Job 类声明 `$tries` |
+| API null 默认值 | API 返回数据中所有 null 值由 return_data() 经 api_normalize_data() 递归转成空字符串；Resource 层不需要再手动 ?? ''，数字字段（id/age 等）本就不会为 null |
+| API 响应格式 | 成功（code=1）返回 `{code, msg, data}` 三字段；失败（code=0）返回 `{code, msg, errors, data, error_flag}` 五字段（errors 字段级错误明细空为 {}，error_flag 特殊场景英文标识如 no_login 空为 ""）。由 return_data() 按 code 自动区分，Controller/Resource 不要手动拼这层结构 |
+| API Swagger 文档规范 | 所有 API 接口必须有完整 Swagger 注解：summary 一句话摘要、description 接口详细说明、parameters/requestBody 每个参数必须有 description、responses data 每个返回字段必须有 description；有枚举值的字段在 description 里列出所有取值和对应中文（如 type：1=系统消息，2=订单消息）。禁止只写 example 不写说明 |

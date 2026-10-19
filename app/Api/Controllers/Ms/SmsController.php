@@ -18,6 +18,7 @@ class SmsController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/sms/send',
             summary: '发送短信验证码',
+            description: '向指定手机号发送 6 位数字短信验证码，用于登录/注册/改密/换绑等场景；有频率限制，phone 不传时使用当前登录账号手机号。',
             tags: ['公共接口'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -37,7 +38,7 @@ class SmsController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: '验证码发送成功'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'phone', type: 'string', example: '13800138000'),
+                                    new OA\Property(property: 'phone', type: 'string', description: '实际收到验证码的手机号', example: '13800138000'),
                                 ]
                             ),
                         ]

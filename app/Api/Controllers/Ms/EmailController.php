@@ -18,6 +18,7 @@ class EmailController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/email/send',
             summary: '发送邮箱验证码',
+            description: '向指定邮箱发送 6 位数字邮箱验证码，用于登录/注册/改密/换绑等场景；有频率限制，email 不传时使用当前登录账号邮箱。',
             tags: ['公共接口'],
             requestBody: new OA\RequestBody(
                 required: true,
@@ -37,7 +38,7 @@ class EmailController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: '验证码已发送'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'email', type: 'string', example: 'user@example.com'),
+                                    new OA\Property(property: 'email', type: 'string', description: '实际收到验证码的邮箱', example: 'user@example.com'),
                                 ]
                             ),
                         ]

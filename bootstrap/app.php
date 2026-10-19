@@ -40,4 +40,30 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return null;
         });
+
+        // API 表单验证失败：返回统一格式（code=0, msg=第一条错误, errors=字段错误明细）
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                $errors = $e->errors();
+                $firstMessage = collect($errors)->flatten()->first() ?: '参数校验失败';
+                return error($firstMessage, '', $errors);
+            }
+            return null;
+        });
+
+        // API 授权失败（403）
+        $exceptions->render(function (\Illuminate\Auth\Access\AuthorizationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return error('无权限执行此操作');
+            }
+            return null;
+        });
+
+        // API 资源不存在（404 Model not found）
+        $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return error('请求的资源不存在');
+            }
+            return null;
+        });
     })->create();

@@ -24,7 +24,7 @@ class UserResource extends JsonResource
                 2 => '女',
                 default => '未知',
             },
-            'age'        => $this->birthday?->diffInYears(now()),
+            'age'        => $this->birthday ? max(0, (int) floor($this->birthday->diffInYears(now()))) : 0,
             'birthday'   => $this->birthday?->toDateString(),
             'created_at' => $this->created_at?->toDateTimeString(),
         ];

@@ -9,7 +9,7 @@ class ConfigsService
      *
      * @var array<int, string>
      */
-    protected array $configKeys = ['project_name'];
+    protected array $configKeys = ['test1'];
 
     /**
      * 获取对外暴露的系统配置键值对

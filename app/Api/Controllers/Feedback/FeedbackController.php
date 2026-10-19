@@ -21,7 +21,8 @@ class FeedbackController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/feedback/submit',
             summary: '提交意见反馈',
-            tags: ['用户/意见反馈'],
+            description: '用户提交意见反馈/投诉，可上传截图。',
+            tags: ['意见反馈'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -44,7 +45,7 @@ class FeedbackController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: '提交成功'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'id', description: '反馈ID', type: 'integer', example: 1),
                                 ]
                             ),
                         ]
@@ -65,7 +66,8 @@ class FeedbackController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/feedback/list',
             summary: '我的反馈列表',
-            tags: ['用户/意见反馈'],
+            description: '分页查询当前用户提交的反馈列表。',
+            tags: ['意见反馈'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -85,21 +87,21 @@ class FeedbackController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: 'success'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'total', type: 'integer', example: 10),
-                                    new OA\Property(property: 'count', type: 'integer', example: 10),
-                                    new OA\Property(property: 'perPage', type: 'integer', example: 10),
-                                    new OA\Property(property: 'currentPage', type: 'integer', example: 1),
-                                    new OA\Property(property: 'lastPage', type: 'integer', example: 1),
-                                    new OA\Property(property: 'firstItem', type: 'integer', example: 1),
-                                    new OA\Property(property: 'lastItem', type: 'integer', example: 10),
+                                    new OA\Property(property: 'total', type: 'integer', description: '总条数', example: 10),
+                                    new OA\Property(property: 'count', type: 'integer', description: '当前页条数', example: 10),
+                                    new OA\Property(property: 'perPage', type: 'integer', description: '每页条数', example: 10),
+                                    new OA\Property(property: 'currentPage', type: 'integer', description: '当前页码', example: 1),
+                                    new OA\Property(property: 'lastPage', type: 'integer', description: '最后一页页码', example: 1),
+                                    new OA\Property(property: 'firstItem', type: 'integer', description: '当前页第一条序号', example: 1),
+                                    new OA\Property(property: 'lastItem', type: 'integer', description: '当前页最后一条序号', example: 10),
                                     new OA\Property(property: 'datas', type: 'array', items: new OA\Items(
                                         properties: [
-                                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            new OA\Property(property: 'title', type: 'string', example: '功能异常反馈'),
-                                            new OA\Property(property: 'status', type: 'integer', example: 0),
-                                            new OA\Property(property: 'status_name', type: 'string', example: '待处理'),
-                                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
-                                            new OA\Property(property: 'handled_at', type: 'string', nullable: true, example: null),
+                                            new OA\Property(property: 'id', description: '反馈ID', type: 'integer', example: 1),
+                                            new OA\Property(property: 'title', type: 'string', description: '反馈标题', example: '功能异常反馈'),
+                                            new OA\Property(property: 'status', type: 'integer', description: '反馈状态：0=待处理，1=处理中，2=处理完成，3=搁置', example: 0),
+                                            new OA\Property(property: 'status_name', type: 'string', description: '反馈状态中文', example: '待处理'),
+                                            new OA\Property(property: 'created_at', type: 'string', description: '提交时间 Y-m-d H:i:s', example: '2025-01-01 12:00:00'),
+                                            new OA\Property(property: 'handled_at', type: 'string', description: '处理时间 Y-m-d H:i:s，未处理为 null', nullable: true, example: null),
                                         ],
                                         type: 'object'
                                     )),
@@ -134,7 +136,8 @@ class FeedbackController extends \Illuminate\Routing\Controller
         OA\Post(
             path: '/api/feedback/detail',
             summary: '反馈详情',
-            tags: ['用户/意见反馈'],
+            description: '查看单条反馈详情及客服回复。',
+            tags: ['意见反馈'],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
@@ -153,21 +156,21 @@ class FeedbackController extends \Illuminate\Routing\Controller
                             new OA\Property(property: 'msg', type: 'string', example: 'success'),
                             new OA\Property(property: 'data', type: 'object',
                                 properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'user_id', type: 'integer', example: 1001),
-                                    new OA\Property(property: 'title', type: 'string', example: '功能异常反馈'),
-                                    new OA\Property(property: 'content', type: 'string', example: '点击提交按钮无响应...'),
-                                    new OA\Property(property: 'images', type: 'array', items: new OA\Items(type: 'string', example: 'https://example.com/uploads/xxx.jpg')),
-                                    new OA\Property(property: 'contact_name', type: 'string', example: '张三'),
-                                    new OA\Property(property: 'contact_phone', type: 'string', example: '13800138000'),
-                                    new OA\Property(property: 'status', type: 'integer', example: 0),
-                                    new OA\Property(property: 'status_name', type: 'string', example: '待处理'),
-                                    new OA\Property(property: 'handler_id', type: 'integer', nullable: true, example: null),
-                                    new OA\Property(property: 'handled_at', type: 'string', nullable: true, example: null),
-                                    new OA\Property(property: 'reply', type: 'string', nullable: true, example: null),
-                                    new OA\Property(property: 'replied_at', type: 'string', nullable: true, example: null),
-                                    new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
-                                    new OA\Property(property: 'updated_at', type: 'string', example: '2025-01-01 12:00:00'),
+                                    new OA\Property(property: 'id', description: '反馈ID', type: 'integer', example: 1),
+                                    new OA\Property(property: 'user_id', type: 'integer', description: '提交人用户ID', example: 1001),
+                                    new OA\Property(property: 'title', type: 'string', description: '反馈标题', example: '功能异常反馈'),
+                                    new OA\Property(property: 'content', type: 'string', description: '反馈正文内容', example: '点击提交按钮无响应...'),
+                                    new OA\Property(property: 'images', type: 'array', description: '截图列表', items: new OA\Items(type: 'string', example: 'https://example.com/uploads/xxx.jpg')),
+                                    new OA\Property(property: 'contact_name', type: 'string', description: '联系人姓名', example: '张三'),
+                                    new OA\Property(property: 'contact_phone', type: 'string', description: '联系手机号', example: '13800138000'),
+                                    new OA\Property(property: 'status', type: 'integer', description: '反馈状态：0=待处理，1=处理中，2=处理完成，3=搁置', example: 0),
+                                    new OA\Property(property: 'status_name', type: 'string', description: '反馈状态中文', example: '待处理'),
+                                    new OA\Property(property: 'handler_id', type: 'integer', description: '处理人后台管理员ID，未处理为 null', nullable: true, example: null),
+                                    new OA\Property(property: 'handled_at', type: 'string', description: '处理时间 Y-m-d H:i:s，未处理为 null', nullable: true, example: null),
+                                    new OA\Property(property: 'reply', type: 'string', description: '客服回复内容，未回复为 null', nullable: true, example: null),
+                                    new OA\Property(property: 'replied_at', type: 'string', description: '客服回复时间，未回复为 null', nullable: true, example: null),
+                                    new OA\Property(property: 'created_at', type: 'string', description: '提交时间 Y-m-d H:i:s', example: '2025-01-01 12:00:00'),
+                                    new OA\Property(property: 'updated_at', type: 'string', description: '最近更新时间 Y-m-d H:i:s', example: '2025-01-01 12:00:00'),
                                 ]
                             ),
                         ]
