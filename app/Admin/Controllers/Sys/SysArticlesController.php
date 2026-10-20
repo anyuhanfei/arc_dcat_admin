@@ -37,21 +37,35 @@ class SysArticlesController extends AdminController
                 return $v instanceof \App\Enums\PublishStatus ? $v->value : $v;
             })->using(__('sys-articles.enums.status'))->label([0 => 'default', 1 => 'success']);
             $grid->column('updated_at', admin_trans_field('updated_at'))->sortable();
-        
+
+            // 禁用默认新增按钮，改用自定义弹窗（forceRefresh模式，每次打开都重新加载数据）
+            $grid->disableCreateButton();
+
             $grid->tools(function (Grid\Tools $tools) {
+                // 自定义新增按钮（带forceRefresh，关闭弹窗时销毁DOM，下次打开重新请求最新数据）
+                Form::dialog(trans('admin.new'))
+                    ->click('.article-dialog-create')
+                    ->forceRefresh()
+                    ->success('Dcat.reload()')
+                    ->dimensions('80%', '80%');
+
+                $tools->append('<button class="btn btn-primary article-dialog-create" data-url="'.admin_url('sys/articles/create').'">
+                    <i class="feather icon-plus"></i>&nbsp;&nbsp;'.trans('admin.new').'
+                </button>');
+
                 // 文章分类管理弹框：统一 helper（openDcatFrame iframe 弹窗 + mini 布局，文案取语言文件）
                 $tools->append(admin_dialog_frame_button(
                     admin_base_path('sys/article-categories'),
                     __('sys-articles.buttons.category_manage')
                 ));
             });
-        
+
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');
                 $filter->equal('category_id', admin_trans_field('category_id'))->select(SysArticleCategories::query()->orderBy('sort')->pluck('name', 'id'));
                 $filter->like('title', admin_trans_field('title'));
                 $filter->equal('status', admin_trans_field('status'))->select(__('sys-articles.enums.status'));
-        
+
             });
         });
     }

@@ -26,5 +26,6 @@ return [
     'buttons' => [
         'category_manage' => 'Manage Categories',
         'fill_value'      => 'Fill Value',
+        'back_to_fill'    => 'Back to Fill Config',
     ],
 ];

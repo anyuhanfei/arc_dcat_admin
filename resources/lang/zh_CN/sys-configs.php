@@ -26,5 +26,6 @@ return [
     'buttons' => [
         'category_manage' => '配置分类管理',
         'fill_value'      => '填写值',
+        'back_to_fill'    => '返回配置项填写',
     ],
 ];

@@ -50,6 +50,31 @@ Admin::script(
     .'};'
 );
 
+// 全局弹窗表单默认开启强制刷新：未显式指定 forceRefresh 的弹窗（内置"新增"）关闭即销毁缓存，
+// 避免重复打开时复用旧 DOM 导致动态选项（如分类下拉）不更新；已显式传 forceRefresh() 的（如行内编辑 DialogEdit、文章自定义新增）保持 true 不受影响。
+// 注意：PHP 端 Widgets/DialogForm.php 对未开启的弹窗输出的是显式 false（非 undefined），
+// 因此判断必须用 !== true，若只判 === undefined 则永不命中，内置新增弹窗拿不到强制刷新。
+// 幂等标记防止 Pjax 片段重复执行时重复包装。
+Admin::script(<<<'JS'
+(function () {
+    // 1) 全局弹窗默认强制刷新：未显式指定 forceRefresh 的弹窗（内置"新增"）关闭即销毁缓存，
+    //    避免复用旧 DOM 导致动态选项（如分类下拉）不更新；显式 forceRefresh() 的保持 true 不受影响。
+    if (Dcat.DialogForm && !Dcat.DialogForm.__forceRefreshWrapped) {
+        var _orig = Dcat.DialogForm;
+        var wrapped = function (options) {
+            options = options || {};
+            if (options.forceRefresh !== true) {
+                options.forceRefresh = true;
+            }
+            return _orig(options);
+        };
+        wrapped.__forceRefreshWrapped = true;
+        Dcat.DialogForm = wrapped;
+    }
+})();
+JS
+);
+
 // 弹窗内容（?_dialog_form_=1 请求）统一使用无侧边栏布局
 Content::composing(function (Content $content) {
     if (request('_dialog_form_')) {

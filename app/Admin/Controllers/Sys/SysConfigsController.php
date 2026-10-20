@@ -13,9 +13,22 @@ use Dcat\Admin\Grid\Displayers\Actions;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SysConfigsController extends AdminController
 {
+    /**
+     * 图片上传默认允许的格式白名单（小写扩展名）
+     */
+    private const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+
+    /**
+     * 文件上传默认允许的格式白名单（小写扩展名）
+     */
+    private const FILE_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'zip', 'rar'];
+
     /**
      * Make a grid builder.
      *
@@ -24,6 +37,7 @@ class SysConfigsController extends AdminController
     protected function grid(): Grid
     {
         return Grid::make(new SysConfigs(), function (Grid $grid) {
+            // 新增/编辑保持全局弹窗模式（enableDialogCreate + DialogEdit），仅工具栏入口做跳转。
             $grid->column('id', admin_trans_field('id'))->sortable();
             $grid->column('category_id', admin_trans_field('category_id'))->display(function ($v) {
                 static $names = null;
@@ -44,6 +58,12 @@ class SysConfigsController extends AdminController
                     admin_base_path('sys/config-categories'),
                     __('sys-configs.buttons.category_manage')
                 ));
+                // 返回配置项填写（整页跳转到配置编辑页）
+                $tools->append(
+                    '<a href="'.admin_base_path('sys/config-editor').'" class="btn btn-default">'
+                    .'<i class="feather icon-edit"></i> '.__('sys-configs.buttons.back_to_fill')
+                    .'</a>'
+                );
             });
 
             $grid->actions(function (Actions $actions) {
@@ -116,27 +136,39 @@ class SysConfigsController extends AdminController
                 ->options(ConfigType::options())
                 ->required()
                 ->default('text')
-                ->when('in', ['radio', 'checkbox', 'select'], function (Form $form) {
+                ->when(['radio', 'checkbox', 'select'], function (Form $form) {
                     $form->table('options', admin_trans_field('options'), function ($table) {
                         $table->text('key', '键');
                         $table->text('value', '值');
                     });
                 })
-                ->when('file', function (Form $form) {
+                ->when(['image', 'file'], function (Form $form) {
+                    // 允许扩展名：纯关键词自由填写，以实际提交为准，系统不自动补充；
+                    // 仅新增页预填图片常见格式作为便利，编辑页用数据库原值，删除即清空、不回补
                     $form->tags('allowed_extensions', admin_trans_field('allowed_extensions'))
+                        ->default(self::IMAGE_EXTENSIONS)
+                        ->help('输入允许的扩展名（不带点，如 jpg、png），空格/逗号分隔，可自由填写；以实际提交为准，系统不自动补充。')
                         ->saving(function ($value) {
-                            // 提交：tags 数组 → 逗号分隔字符串
-                            if (is_array($value)) {
-                                return implode(',', array_filter(array_map('trim', $value)));
+                            $type = request('type');
+                            // 非图片/文件类型不保存白名单
+                            if (! in_array($type, [ConfigType::IMAGE->value, ConfigType::FILE->value], true)) {
+                                return null;
                             }
-                            return $value;
+                            // 纯关键词清洗：trim、小写、去空、去重，不做候选白名单限制，也不自动补默认
+                            $raw = is_array($value)
+                                ? $value
+                                : preg_split('/[,;，；\s]+/', (string) $value);
+                            $list = array_values(array_unique(array_filter(
+                                array_map(fn ($x) => strtolower(trim((string) $x)), $raw)
+                            )));
+                            return $list ? implode(',', $list) : null;
                         })
                         ->customFormat(function ($value) {
-                            // 编辑回显：数据库字符串 → tags 数组
+                            // 编辑回显：数据库逗号字符串 → tags 数组，纯按库值回显，不叠加默认
                             if (is_array($value)) {
                                 return $value;
                             }
-                            return $value ? array_filter(array_map('trim', explode(',', (string) $value))) : [];
+                            return $value ? array_values(array_filter(array_map('trim', explode(',', (string) $value)))) : [];
                         });
                 });
 
@@ -181,10 +213,29 @@ class SysConfigsController extends AdminController
     public function saveFillValue($id): mixed
     {
         $config = SysConfigsModel::findOrFail($id);
+
+        // autoUpload 独立上传 XHR：先存盘并返回 Dcat 上传成功格式，主提交再落库
+        if ($file = request()->file('_file_')) {
+            return $this->handleAutoUpload($file, $config);
+        }
+
         $value = request('value');
 
         if ($config->type === ConfigType::CHECKBOX->value) {
-            $value = is_array($value) ? json_encode($value) : ($value ?: '[]');
+            // 过滤 null/空项，避免存出 [null] 这类坏值
+            $items = is_array($value)
+                ? array_values(array_filter($value, fn ($v) => $v !== null && $v !== ''))
+                : [];
+            $value = json_encode($items, JSON_UNESCAPED_UNICODE);
+        }
+
+        // 图片/文件：按配置的扩展名白名单校验提交路径，非法格式拒绝保存
+        if (in_array($config->type, [ConfigType::IMAGE->value, ConfigType::FILE->value], true)) {
+            try {
+                $value = $this->filterUploadValue($config, $value);
+            } catch (\RuntimeException $e) {
+                return (new \Dcat\Admin\Http\JsonResponse())->error($e->getMessage());
+            }
         }
 
         $config->update(['value' => $value]);
@@ -233,10 +284,16 @@ class SysConfigsController extends AdminController
                 $form->select('value', $label)->options($this->parseOptions($config->options))->value($value);
                 break;
             case ConfigType::IMAGE->value:
-                $form->adminImage('value', $label)->value($value);
+                $imageExts = $this->parseExtensions($config->allowed_extensions, ConfigType::IMAGE->value);
+                $form->adminImage('value', $label)
+                    ->accept(implode(',', $imageExts), 'image/*')
+                    ->value($value);
                 break;
             case ConfigType::FILE->value:
-                admin_form_file_field($form->file('value', $label), $this->parseExtensions($config->allowed_extensions))->value($value);
+                admin_form_file_field(
+                    $form->file('value', $label),
+                    $this->parseExtensions($config->allowed_extensions, ConfigType::FILE->value)
+                )->value($value);
                 break;
             case ConfigType::PASSWORD->value:
                 $form->password('value', $label)->value($value);
@@ -254,7 +311,8 @@ class SysConfigsController extends AdminController
     }
 
     /**
-     * 将 options 数组（[{"key":"1","value":"选项1"}]）转为 ['1'=>'选项1'] 关联数组
+     * 将 options 数组（[{"key":"显示文本","value":"提交值"}]）转为 [提交值=>显示文本] 关联数组。
+     * 即页面展示 key，表单提交/保存 value。
      *
      * @param mixed $options
      * @return array<string, string>
@@ -267,26 +325,94 @@ class SysConfigsController extends AdminController
         $result = [];
         foreach ($options as $item) {
             if (is_array($item) && isset($item['key'], $item['value'])) {
-                $result[$item['key']] = $item['value'];
+                $result[$item['value']] = $item['key'];
             }
         }
         return $result;
     }
 
     /**
-     * 将逗号分隔的扩展名字符串转为数组；为空时返回默认扩展名列表
+     * 处理 autoUpload 独立上传 XHR：按配置白名单校验后存盘，返回 Dcat webuploader
+     * 要求的成功格式，前端据此把相对路径写入隐藏域，主提交时再落库。
+     *
+     * @param UploadedFile $file 上传文件
+     * @param SysConfigsModel $config 配置项
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handleAutoUpload(UploadedFile $file, SysConfigsModel $config)
+    {
+        $ext = strtolower($file->getClientOriginalExtension() ?: $file->extension());
+        $allowed = $this->parseExtensions($config->allowed_extensions, $config->type);
+
+        if (! empty($allowed) && ! in_array($ext, $allowed, true)) {
+            return response()->json([
+                'status'  => false,
+                'message' => '仅支持 ' . implode('/', $allowed) . ' 格式，当前为 ' . ($ext ?: '未知'),
+            ]);
+        }
+
+        $dir = date('Ymd');
+        $name = date('Ymd_His') . '_' . Str::random(8) . '.' . $ext;
+        $path = $dir . '/' . $name;
+
+        Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+
+        return response()->json([
+            'status' => true,
+            'data'   => [
+                'id'   => $path,
+                'name' => $name,
+                'path' => $name,
+                'url'  => Storage::disk('public')->url($path),
+            ],
+        ]);
+    }
+
+    /**
+     * 校验图片/文件提交路径的扩展名是否在配置白名单内；空值（清空）直接放行。
+     *
+     * @param SysConfigsModel $config 配置项
+     * @param mixed $value 提交的文件路径
+     * @return string|null 清洗后的路径，空值返回 null
+     * @throws \RuntimeException 扩展名不在白名单时抛出
+     */
+    private function filterUploadValue(SysConfigsModel $config, mixed $value): ?string
+    {
+        $value = is_string($value) ? trim($value) : '';
+        if ($value === '') {
+            return null;
+        }
+
+        $allowed = $this->parseExtensions($config->allowed_extensions, $config->type);
+        if (empty($allowed)) {
+            // 未配置白名单即不限制
+            return $value;
+        }
+        $path = (string) (parse_url($value, PHP_URL_PATH) ?: $value);
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        if (! in_array($ext, $allowed, true)) {
+            throw new \RuntimeException('仅支持 ' . implode('/', $allowed) . ' 格式，当前为 ' . ($ext ?: '未知'));
+        }
+
+        return $value;
+    }
+
+    /**
+     * 将逗号分隔的扩展名字符串转为数组；为空时按类型返回默认白名单
      *
      * @param mixed $extensions
+     * @param string|null $type 配置类型（ConfigType value），用于决定空值时的默认白名单
      * @return array<int, string>
      */
-    private function parseExtensions(mixed $extensions): array
+    private function parseExtensions(mixed $extensions, ?string $type = null): array
     {
-        if (empty($extensions)) {
-            return ['jpg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip'];
-        }
-        if (is_array($extensions)) {
-            return array_values(array_filter(array_map('trim', $extensions)));
-        }
-        return array_values(array_filter(array_map('trim', explode(',', (string) $extensions))));
+        $list = is_array($extensions)
+            ? $extensions
+            : ($extensions ? explode(',', (string) $extensions) : []);
+        $list = array_values(array_filter(array_map('trim', $list)));
+
+        // 填什么存什么：配置为空即不限制，不自动补默认扩展名
+        return $list;
     }
 }
