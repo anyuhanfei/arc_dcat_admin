@@ -15,6 +15,7 @@ Admin::routes();
 // 自定义表单字段注册：封装图片上传（自动上传/日期目录/重命名/缩略图/媒体库联动）
 \Dcat\Admin\Form::extend('adminImage', \App\Admin\Form\Field\AdminImage::class);
 \Dcat\Admin\Form::extend('adminMultipleImage', \App\Admin\Form\Field\AdminMultipleImage::class);
+\Dcat\Admin\Form::extend('adminFile', \App\Admin\Form\Field\AdminFile::class);
 
 // 登录验证码刷新（无需登录，只带路由前缀不带中间件）
 Route::prefix(config('admin.route.prefix'))

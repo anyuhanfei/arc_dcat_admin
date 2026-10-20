@@ -4,6 +4,9 @@ namespace App\Admin\Form\Field;
 
 use Dcat\Admin\Form\Field\Image;
 use App\Admin\Form\Field\Concerns\HasMediaUpload;
+use App\Integrations\Storage\StorageManager;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -35,6 +38,54 @@ class AdminImage extends Image
         parent::prepareFile($file);
 
         $this->generateThumb($file);
+    }
+
+    /**
+     * autoUpload 独立上传落盘：本地走 Dcat 默认 disk，开云时走自研云驱动.
+     */
+    public function upload(UploadedFile $file)
+    {
+        // 本地存储：维持 Dcat 默认落盘逻辑
+        if (! StorageManager::isCloud()) {
+            return parent::upload($file);
+        }
+
+        $request = request();
+        if (! $request->get('_id')) {
+            return $this->responseErrorMessage('Missing id');
+        }
+
+        if ($errors = $this->getValidationErrors($file)) {
+            return $this->responseValidationMessage($errors);
+        }
+
+        $ext = strtolower($file->getClientOriginalExtension() ?: $file->extension());
+        $this->name = date('Ymd_His').'_'.Str::random(8).'.'.$ext;
+        $key = date('Ymd').'/'.$this->name;
+
+        // 原图传云，缩略图只写本地 public disk（不传云）
+        StorageManager::drive()->putFile($file->getRealPath(), $key);
+        $this->generateLocalThumb($file, $key);
+
+        $url = StorageManager::drive()->url($key);
+
+        return $this->responseUploaded($this->saveFullUrl ? $url : $key, $url);
+    }
+
+    /**
+     * 回显 URL：云模式相对键走云驱动拼接，绝对 URL 原样返回.
+     */
+    public function objectUrl($path)
+    {
+        if (StorageManager::isCloud()) {
+            if (URL::isValidUrl($path)) {
+                return $path;
+            }
+
+            return StorageManager::drive()->url($path);
+        }
+
+        return parent::objectUrl($path);
     }
 
     /**

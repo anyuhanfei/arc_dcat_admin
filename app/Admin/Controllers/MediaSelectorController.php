@@ -15,12 +15,13 @@ class MediaSelectorController
     /**
      * 媒体库文件列表（分页）.
      *
-     * 约定响应：{"code":0,"data":{"list":[{"path":"...","url":"...","thumb_url":"...","name":"..."}],"total":100,"page":1}}
-     * - path：相对 public 磁盘的原图路径（存库值）
-     * - url：原图完整 URL
-     * - thumb_url：缩略图完整 URL（文件名 thumb 前缀），无缩略图时回退到原图 URL
+     * 缩略图统一存本地 public disk（thumb 前缀），列表以本地缩略图为数据源；
+     * 选中后由 thumb 名还原原图相对键，云模式再拼云原图链接，表单存相对键.
      *
-     * 过滤规则：跳过 thumb 开头的文件（这些是缩略图，不作为独立媒体项展示）
+     * 约定响应：{"code":0,"data":{"list":[{"path":"...","url":"...","thumb_url":"...","name":"..."}],"total":100,"page":1}}
+     * - path：原图相对键（存库值）
+     * - url：原图完整 URL（云模式走云域名，本地走 public disk）
+     * - thumb_url：本地缩略图完整 URL
      */
     public function list(Request $request): JsonResponse
     {
@@ -31,43 +32,43 @@ class MediaSelectorController
         $pageSize = min(100, max(12, (int) $request->get('page_size', 48)));
 
         try {
-            // 已软删除的文件路径，列表中过滤掉
+            // 已软删除的原图路径，列表中过滤掉
             $deletedPaths = DB::table('media_deleted_files')->pluck('path')->all();
 
-            $allFiles = collect($disk->allFiles())
-                ->filter(function ($path) use ($allowedExt, $deletedPaths) {
-                    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+            $isCloud = \App\Integrations\Storage\StorageManager::isCloud();
+            $drive = $isCloud ? \App\Integrations\Storage\StorageManager::drive() : null;
+
+            // 数据源：本地 public disk 中的 thumb 缩略图文件
+            $thumbs = collect($disk->allFiles())
+                ->filter(function ($thumbPath) use ($allowedExt, $deletedPaths) {
+                    $basename = basename($thumbPath);
+                    if (! Str::startsWith($basename, 'thumb')) {
+                        return false;
+                    }
+                    $ext = strtolower(pathinfo($thumbPath, PATHINFO_EXTENSION));
                     if (! in_array($ext, $allowedExt, true)) {
                         return false;
                     }
-                    // 跳过缩略图文件（thumb 前缀），它们不是独立媒体项
-                    $basename = basename($path);
-                    if (Str::startsWith($basename, 'thumb')) {
-                        return false;
-                    }
-                    // 跳过已软删除的文件
-                    if (in_array($path, $deletedPaths, true)) {
+                    // 按还原出的原图键过滤软删除
+                    $originalKey = $this->originalKeyFromThumb($thumbPath);
+                    if (in_array($originalKey, $deletedPaths, true)) {
                         return false;
                     }
                     return true;
                 })
-                ->sortByDesc(function ($path) use ($disk) {
-                    return $disk->lastModified($path);
-                })
+                ->sortByDesc(fn ($thumbPath) => $disk->lastModified($thumbPath))
                 ->values();
 
-            $total = $allFiles->count();
-            $pageItems = $allFiles->forPage($page, $pageSize)->map(function ($path) use ($disk) {
-                // 构造缩略图路径：同目录下文件名前加 thumb
-                $info = pathinfo($path);
-                $thumbPath = ($info['dirname'] === '.' ? '' : $info['dirname'].'/').'thumb'.$info['basename'];
+            $total = $thumbs->count();
+            $pageItems = $thumbs->forPage($page, $pageSize)->map(function ($thumbPath) use ($disk, $drive, $isCloud) {
+                $originalKey = $this->originalKeyFromThumb($thumbPath);
+                $originalUrl = $isCloud ? $drive->url($originalKey) : $disk->url($originalKey);
 
                 return [
-                    'path'      => $path,
-                    'url'       => $disk->url($path),
-                    // 有缩略图用缩略图，没有则回退原图
-                    'thumb_url' => $disk->exists($thumbPath) ? $disk->url($thumbPath) : $disk->url($path),
-                    'name'      => basename($path),
+                    'path'      => $originalKey,
+                    'url'       => $originalUrl,
+                    'thumb_url' => $disk->url($thumbPath),
+                    'name'      => basename($originalKey),
                 ];
             });
 
@@ -82,6 +83,17 @@ class MediaSelectorController
         } catch (\Throwable $e) {
             return response()->json(['code' => 1, 'message' => '媒体列表加载失败: '.$e->getMessage()]);
         }
+    }
+
+    /**
+     * 由 thumb 缩略图相对路径还原原图相对键（去掉文件名前缀 "thumb"）.
+     */
+    private function originalKeyFromThumb(string $thumbPath): string
+    {
+        $info = pathinfo($thumbPath);
+        $dir = $info['dirname'] === '.' ? '' : $info['dirname'].'/';
+
+        return $dir.Str::substr($info['basename'], 5);
     }
 
     /**
@@ -119,15 +131,24 @@ class MediaSelectorController
 
             try {
                 $filename = date('Ymd').'/'.date('Ymd_His').'_'.Str::random(8).'.'.$ext;
-                Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
 
-                // 生成 thumb 缩略图
+                // 原图：云模式传云驱动，本地写 public disk
+                if (\App\Integrations\Storage\StorageManager::isCloud()) {
+                    $drive = \App\Integrations\Storage\StorageManager::drive();
+                    $drive->putFile($file->getRealPath(), $filename);
+                    $originalUrl = $drive->url($filename);
+                } else {
+                    Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
+                    $originalUrl = Storage::disk('public')->url($filename);
+                }
+
+                // 缩略图统一存本地 public disk（不传云）
                 $thumbFilename = $this->generateThumb($file, $filename);
 
                 $results[] = [
                     'path'      => $filename,
-                    'url'       => Storage::disk('public')->url($filename),
-                    'thumb_url' => $thumbFilename ? Storage::disk('public')->url($thumbFilename) : Storage::disk('public')->url($filename),
+                    'url'       => $originalUrl,
+                    'thumb_url' => $thumbFilename ? Storage::disk('public')->url($thumbFilename) : $originalUrl,
                     'name'      => basename($filename),
                 ];
             } catch (\Throwable $e) {
@@ -184,8 +205,10 @@ class MediaSelectorController
 
             $info = pathinfo($originalPath);
             $thumbPath = ($info['dirname'] === '.' ? '' : $info['dirname'].'/').'thumb'.$info['basename'];
+            $encoded = (string) $image->encode(null, 80);
 
-            Storage::disk('public')->put($thumbPath, (string) $image->encode(null, 80));
+            // 缩略图统一存本地 public disk，不传云
+            Storage::disk('public')->put($thumbPath, $encoded);
 
             return $thumbPath;
         } catch (\Throwable $e) {

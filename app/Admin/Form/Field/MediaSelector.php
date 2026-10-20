@@ -124,7 +124,10 @@ CSS;
     // 渲染单个媒体项（列表加载与上传共用），prepend=true 时插入列表顶部
     function renderItem(item, $box, $input, $preview, $placeholder, layerIndex, prepend) {
         var $item = $('<div class="media-selector-item"></div>');
-        $('<img>').attr('src', item.url).attr('loading', 'lazy').appendTo($item);
+        // 仅使用缩略图；无缩略图时不渲染 img，避免直接加载原图
+        if (item.thumb_url) {
+            $('<img>').attr('src', item.thumb_url).attr('loading', 'lazy').appendTo($item);
+        }
         $('<span>').text(item.name).appendTo($item);
         $item.on('click', function () {
             $input.val(item.path).trigger('change');
@@ -339,6 +342,10 @@ CSS;
                     }
 
                     list.forEach(function (item) {
+                        // 仅显示有缩略图的项，无缩略图（云存量图）跳过，不加载原图
+                        if (!item.thumb_url) {
+                            return;
+                        }
                         renderItem(item, $box, $input, $preview, $placeholder, layerIndex, false);
                     });
                 },

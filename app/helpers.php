@@ -329,20 +329,40 @@ function format_paginated_datas(LengthAwarePaginator $datas, array $visible = ['
 * @param string $catelogue 文件目录
 * @return void
 */
+/**
+ * 获取当前存储驱动（本地 / 腾讯云COS / 阿里云OSS）
+ */
+function cloud_storage(): \App\Integrations\Storage\StorageDriver
+{
+    return \App\Integrations\Storage\StorageManager::drive();
+}
+
+/**
+ * 统一补全文件完整链接。
+ *  - 空值返回空串；http/https/data: 开头原样返回；
+ *  - 开启云存储（CLOUD_DRIVER=cos/aliyun）时，统一走云自定义域名；
+ *  - 本地存储走站点域名 + /uploads 目录。
+ *
+ * @param string $file_path  相对路径（不含域名）或已完整 URL
+ * @param string $catelogue 本地存储目录前缀，默认 /uploads/
+ */
 function full_url($file_path, $catelogue = '/uploads/'){
     if($file_path == '' || $file_path == null){
         return '';
     }
-    if(strpos($file_path, 'http') !== false){
+    $file_path = (string) $file_path;
+    if(str_starts_with($file_path, 'http://') || str_starts_with($file_path, 'https://') || str_starts_with($file_path, 'data:')){
         return $file_path;
     }
-    if(strpos($file_path, 'https') !== false){
-        return $file_path;
+    // 云存储开启：完整链接统一走云自定义域名（API 与后台所有调用点共用本方法）
+    try {
+        if (\App\Integrations\Storage\StorageManager::isCloud()) {
+            return \App\Integrations\Storage\StorageManager::drive()->url($file_path);
+        }
+    } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::warning('full_url 云域名解析失败: ' . $e->getMessage());
     }
-    if(strpos($file_path, 'data:') !== false){
-        return $file_path;
-    }
-    return url($catelogue . $file_path);
+    return url($catelogue . ltrim($file_path, '/'));
 }
 
 /**

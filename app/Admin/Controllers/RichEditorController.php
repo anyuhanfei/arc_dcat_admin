@@ -105,9 +105,16 @@ class RichEditorController
         // 保存到 public 磁盘 rich-editor/{type}/{Ymd}/ 目录
         try {
             $filename = 'rich-editor/'.$type.'/'.date('Ymd').'/'.time().'_'.Str::random(8).'.'.$ext;
-            Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
 
-            $url = Storage::disk('public')->url($filename);
+            // 本地走 public disk；开启云存储走云驱动（上传后不落本地持久化）
+            if (\App\Integrations\Storage\StorageManager::isCloud()) {
+                $drive = \App\Integrations\Storage\StorageManager::drive();
+                $drive->putFile($file->getRealPath(), $filename);
+                $url = $drive->url($filename);
+            } else {
+                Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
+                $url = Storage::disk('public')->url($filename);
+            }
 
             Log::info('[rich-editor] 上传成功', [
                 'original_name' => $originalName,

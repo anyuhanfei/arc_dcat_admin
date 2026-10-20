@@ -4,6 +4,8 @@ namespace App\Admin\Form\Field\Concerns;
 
 use Dcat\Admin\Admin;
 use Intervention\Image\Facades\Image as InterventionImage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -92,8 +94,40 @@ trait HasMediaUpload
 
             $this->getStorage()->put("{$dir}/{$thumbName}", $encoded);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('生成图片缩略图失败: '.$e->getMessage(), [
+            Log::warning('生成图片缩略图失败: '.$e->getMessage(), [
                 'file' => $file->getClientOriginalName(),
+            ]);
+        }
+    }
+
+    /**
+     * 按原图相对键在本地 public disk 生成同目录 thumb 缩略图（缩略图只存本地，不传云）.
+     *
+     * @param string $key 原图相对键（如 20261020/abc.jpg）
+     */
+    protected function generateLocalThumb(UploadedFile $file, string $key): void
+    {
+        try {
+            $manager = new \Intervention\Image\ImageManager(['driver' => 'gd']);
+            $image = $manager->make($file->getRealPath());
+
+            if ($image->width() > $this->thumbWidth) {
+                $image->resize($this->thumbWidth, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+
+            $encoded = (string) $image->encode(null, 80);
+
+            $info = pathinfo($key);
+            $thumbPath = ($info['dirname'] === '.' ? '' : $info['dirname'].'/').'thumb'.$info['basename'];
+
+            Storage::disk('public')->put($thumbPath, $encoded);
+        } catch (\Throwable $e) {
+            Log::warning('生成本地缩略图失败: '.$e->getMessage(), [
+                'file' => $file->getClientOriginalName(),
+                'key'  => $key,
             ]);
         }
     }
@@ -237,6 +271,10 @@ trait HasMediaUpload
 
             \$grid.empty();
             list.forEach(function (item) {
+                // 仅显示有缩略图的项，无 thumb_url（云存量图）跳过，避免裂图/拉原图
+                if (!item.thumb_url) {
+                    return;
+                }
                 var \$item = \$('<div class="admin-media-item" data-path="'+item.path+'" style="position:relative;border:2px solid #e8e8e8;border-radius:6px;overflow:hidden;cursor:pointer;background:#fff;">' +
                     '<img src="'+item.thumb_url+'" loading="lazy" style="width:100%;height:96px;object-fit:cover;display:block;background:#f4f6f8;">' +
                     '<div style="font-size:11px;color:#666;padding:5px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.name+'</div>' +

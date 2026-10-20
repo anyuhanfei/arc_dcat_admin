@@ -54,6 +54,9 @@ Route::post('email/send', [\App\Api\Controllers\Ms\EmailController::class, 'send
 
 // 需登录接口
 Route::middleware('auth:sanctum')->group(function () {
+    // 文件上传（需登录）
+    Route::post('sys/upload', [\App\Api\Controllers\Sys\UploadController::class, 'store']);
+
     // 意见反馈相关（需登录）
     Route::post('feedback/submit', [\App\Api\Controllers\Feedback\FeedbackController::class, 'submit']);
     Route::post('feedback/list', [\App\Api\Controllers\Feedback\FeedbackController::class, 'list']);

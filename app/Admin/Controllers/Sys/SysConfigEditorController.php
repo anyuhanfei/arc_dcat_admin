@@ -274,7 +274,20 @@ class SysConfigEditorController extends AdminController
         $name = date('Ymd_His') . '_' . Str::random(8) . '.' . $ext;
         $path = $dir . '/' . $name;
 
-        Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+        // 本地走 public disk；开启云存储走云驱动（上传后不落本地持久化）
+        if (\App\Integrations\Storage\StorageManager::isCloud()) {
+            $drive = \App\Integrations\Storage\StorageManager::drive();
+            $drive->putFile($file->getRealPath(), $path);
+            $url = $drive->url($path);
+        } else {
+            Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+            $url = Storage::disk('public')->url($path);
+        }
+
+        // 图片类型：额外在本地 public disk 生成 thumb 缩略图（不传云），供媒体库列表展示
+        if ($config && $config->type === ConfigType::IMAGE->value) {
+            $this->generateLocalImageThumb($file, $path);
+        }
 
         return response()->json([
             'status' => true,
@@ -282,9 +295,36 @@ class SysConfigEditorController extends AdminController
                 'id'   => $path,
                 'name' => $name,
                 'path' => $name,
-                'url'  => Storage::disk('public')->url($path),
+                'url'  => $url,
             ],
         ]);
+    }
+
+    /**
+     * 在本地 public disk 为图片生成 thumb 前缀缩略图（400px 等比缩放，不传云）.
+     */
+    private function generateLocalImageThumb(UploadedFile $file, string $originalPath): void
+    {
+        try {
+            $manager = new \Intervention\Image\ImageManager(['driver' => 'gd']);
+            $image = $manager->make($file->getRealPath());
+
+            if ($image->width() > 400) {
+                $image->resize(400, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            }
+
+            $info = pathinfo($originalPath);
+            $thumbPath = ($info['dirname'] === '.' ? '' : $info['dirname'].'/').'thumb'.$info['basename'];
+            Storage::disk('public')->put($thumbPath, (string) $image->encode(null, 80));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('配置图片缩略图生成失败: '.$e->getMessage(), [
+                'file' => $file->getClientOriginalName(),
+                'path' => $originalPath,
+            ]);
+        }
     }
 
     /**

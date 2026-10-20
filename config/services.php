@@ -92,4 +92,29 @@ return [
         'secret_key'  => env('YIDUN_SECRET_KEY'),
     ],
 
+    // ============ 对象存储（none 本地 / cos 腾讯云 / aliyun 阿里云）============
+    'storage' => [
+        'default' => env('CLOUD_DRIVER', 'none'),
+
+        // 腾讯云 COS（default=cos 时填写，公有读 + 自定义域名，不签名）
+        'cos' => [
+            'secret_id'  => env('COS_SECRET_ID'),
+            'secret_key' => env('COS_SECRET_KEY'),
+            'region'     => env('COS_REGION', 'ap-beijing'),
+            'bucket'     => env('COS_BUCKET'),
+            'domain'     => env('COS_DOMAIN'),
+            'prefix'     => env('COS_PREFIX', ''),
+        ],
+
+        // 阿里云 OSS（default=aliyun 时填写，公有读 + 自定义域名，不签名）
+        'aliyun' => [
+            'access_key_id'     => env('ALIYUN_OSS_ACCESS_KEY_ID'),
+            'access_key_secret' => env('ALIYUN_OSS_ACCESS_KEY_SECRET'),
+            'endpoint'          => env('ALIYUN_OSS_ENDPOINT'),
+            'bucket'            => env('ALIYUN_OSS_BUCKET'),
+            'domain'            => env('ALIYUN_OSS_DOMAIN'),
+            'prefix'            => env('ALIYUN_OSS_PREFIX', ''),
+        ],
+    ],
+
 ];

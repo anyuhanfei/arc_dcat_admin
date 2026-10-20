@@ -355,7 +355,15 @@ class SysConfigsController extends AdminController
         $name = date('Ymd_His') . '_' . Str::random(8) . '.' . $ext;
         $path = $dir . '/' . $name;
 
-        Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+        // 本地走 public disk；开启云存储走云驱动（上传后不落本地持久化）
+        if (\App\Integrations\Storage\StorageManager::isCloud()) {
+            $drive = \App\Integrations\Storage\StorageManager::drive();
+            $drive->putFile($file->getRealPath(), $path);
+            $url = $drive->url($path);
+        } else {
+            Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+            $url = Storage::disk('public')->url($path);
+        }
 
         return response()->json([
             'status' => true,
@@ -363,7 +371,7 @@ class SysConfigsController extends AdminController
                 'id'   => $path,
                 'name' => $name,
                 'path' => $name,
-                'url'  => Storage::disk('public')->url($path),
+                'url'  => $url,
             ],
         ]);
     }

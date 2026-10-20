@@ -91,8 +91,8 @@ class SysAppVersionsController extends AdminController
             // wgt/apk 文件上传：封装于 admin_form_file_field（自动上传、自动重命名、不同步移除、扩展名与大小限制）
             $wgtLabel = admin_trans_field('wgt');
             $apkLabel = admin_trans_field('apk');
-            admin_form_file_field($form->file('wgt', $wgtLabel), ['wgt'], 100, true);
-            admin_form_file_field($form->file('apk', $apkLabel), ['apk'], 100);
+            admin_form_file_field($form->adminFile('wgt', $wgtLabel), ['wgt'], 100, true);
+            admin_form_file_field($form->adminFile('apk', $apkLabel), ['apk'], 100);
             $form->url('ios_store_url', admin_trans_field('ios_store_url'));
             $form->url('harmony_store_url', admin_trans_field('harmony_store_url'));
             $form->radio('force_update', admin_trans_field('force_update'))->options(__('sys-app-versions.enums.force_update'))->default(1);
